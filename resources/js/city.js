@@ -6,7 +6,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 
 const FOG_COLOR = new THREE.Color('#3a0a4a');
-const FOG_DENSITY = 0.0019;
+const FOG_DENSITY = 0.0014;
 const AVENUE = 13;
 const PINK = new THREE.Color(1.6, 0.15, 0.9);
 const CYAN = new THREE.Color(0.15, 1.2, 1.6);
@@ -68,13 +68,13 @@ function layout(rand) {
     const towers = [];
     const lot = 22;
     for (let z = 12; z > -330; z -= lot) {
-        for (let x = -132; x <= 132; x += lot) {
+        for (let x = -440; x <= 440; x += lot) {
             const cx = x + (rand() - 0.5) * 6;
             if (Math.abs(cx) < AVENUE + 8) continue;
             const w = 10 + rand() * 9;
             const d = 10 + rand() * 9;
-            const near = Math.max(0, 1 - Math.hypot(cx, z) / 260);
-            towers.push({ x: cx, z: z + (rand() - 0.5) * 6, w, d, h: 40 + rand() * 120 + near * 140 });
+            const near = Math.max(0, 1 - Math.hypot(cx * 0.6, z) / 260);
+            towers.push({ x: cx, z: z + (rand() - 0.5) * 6, w, d, h: 20 + rand() * 70 + near * 110 });
         }
     }
     for (const x of [-48, -30, 30, 48]) {
@@ -165,9 +165,9 @@ function neonMesh(towers, rand) {
 }
 
 function terrainMesh() {
-    const geometry = new THREE.PlaneGeometry(760, 320, 152, 64);
+    const geometry = new THREE.PlaneGeometry(1000, 240, 200, 48);
     geometry.rotateX(-Math.PI / 2);
-    geometry.translate(0, 0, 150);
+    geometry.translate(0, 0, 130);
 
     const mesh = new THREE.Mesh(
         geometry,
@@ -189,8 +189,8 @@ function terrainMesh() {
                     vec3 p = position;
                     vec2 q = vec2(p.x, p.z - uOffset);
                     float n = noise(q * 0.025) * 0.7 + noise(q * 0.07) * 0.3;
-                    vHill = smoothstep(12.0, 80.0, abs(p.x)) * smoothstep(20.0, 110.0, p.z);
-                    p.y = n * 46.0 * vHill;
+                    vHill = smoothstep(12.0, 70.0, abs(p.x)) * smoothstep(15.0, 80.0, p.z);
+                    p.y = n * 28.0 * vHill;
                     vec4 world = modelMatrix * vec4(p, 1.0);
                     vWorld = vec3(world.x, world.y, world.z - uOffset);
                     vec4 view = viewMatrix * world;
@@ -394,7 +394,7 @@ function start(host) {
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.5, 1500);
     camera.rotation.order = 'YXZ';
-    camera.position.set(0, 12, 285);
+    camera.position.set(0, 10, 235);
 
     const rand = mulberry32(1982);
     const towers = layout(rand);

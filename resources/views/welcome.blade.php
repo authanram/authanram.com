@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Kaushan+Script&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite('resources/js/city.js')
+    @endif
     <style>
         :root { --pink: #ff3cac; --blue: #2b86ff; --cyan: #3ef2ff; --sun: #ffc93c; --orange: #ff6b3d; --bg: #07001a; }
         * { box-sizing: border-box; margin: 0; }
@@ -38,6 +41,10 @@
         .road .lane { stroke: var(--sun); stroke-width: .8; stroke-dasharray: 6 8; animation: lane .8s linear infinite; }
         @keyframes lane { to { stroke-dashoffset: -14; } }
 
+        .city3d { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: 0; transition: opacity 1.2s ease-out; }
+        .is-3d .city3d { opacity: 1; }
+        .is-3d :is(.sun, .city, .ground, .road) { visibility: hidden; }
+        .is-3d::after { background: radial-gradient(40% 45% at 50% 52%, rgba(7, 0, 26, .45), transparent), linear-gradient(transparent 82%, var(--bg)); }
         .hero { position: relative; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 24px 16px 80px; text-align: center; }
         .avatar { width: 168px; height: 168px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 4px var(--blue), 0 0 30px var(--blue); margin-bottom: .6rem; }
         .hello { font-family: 'Kaushan Script', cursive; font-size: clamp(1.8rem, 6vw, 2.8rem); color: var(--sun); rotate: -5deg; text-shadow: 0 0 10px var(--orange), 0 0 26px var(--pink); }

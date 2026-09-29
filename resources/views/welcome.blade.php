@@ -7,104 +7,141 @@
     <meta name="description" content="Hallo, I'm Daniel. I do open source and work for InnoGE.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Mr+Dafoe&family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root { --pink: #ff2bd6; --cyan: #00f0ff; --violet: #8a2be2; --sun: #ffb800; --bg: #0b0016; }
+        :root { --pink: #ff2bd6; --cyan: #00f0ff; --violet: #7b2ff7; --sun: #ffd319; --orange: #ff901f; --bg: #0d0221; }
         * { box-sizing: border-box; margin: 0; }
-        html { background: var(--bg); color: #e8e6ff; font: 22px/1.4 'VT323', ui-monospace, monospace; }
-        body { min-height: 100vh; overflow-x: hidden; }
+        html { background: var(--bg); color: #ece8ff; font: 22px/1.4 'VT323', ui-monospace, monospace; }
+        body { overflow-x: hidden; }
         a { color: inherit; }
         a:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 6px; }
 
-        .sky { position: fixed; inset: 0; z-index: -2; background: linear-gradient(#0b0016 0%, #1a0033 45%, #3d0055 62%, #0b0016 62.1%); }
-        .sun { position: absolute; left: 50%; top: 18vh; width: min(60vw, 420px); aspect-ratio: 1; translate: -50% 0; border-radius: 50%;
-            background: linear-gradient(var(--sun), var(--pink) 75%);
-            mask: repeating-linear-gradient(#000 0 58%, transparent 58% 61%, #000 61% 66%, transparent 66% 70%, #000 70% 74%, transparent 74% 79%, #000 79% 83%, transparent 83% 89%, #000 89% 92%, transparent 92%);
-            filter: drop-shadow(0 0 40px var(--pink)); opacity: .55; }
-        .grid { position: fixed; left: -50%; right: -50%; bottom: 0; height: 38vh; z-index: -1;
-            background: linear-gradient(transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 100% 80px, linear-gradient(90deg, transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 80px 100%;
-            transform: perspective(600px) rotateX(50deg); transform-origin: bottom; opacity: .4; will-change: background-position;
-            mask: linear-gradient(transparent 10%, #000 70%); animation: drive 4s linear infinite; }
-        @keyframes drive { to { background-position: 0 80px, 0 0; } }
-        body::after { content: ''; position: fixed; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.25) 2px 4px); }
+        .hero { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; isolation: isolate; z-index: 5;
+            background: radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 8%, #fff, transparent), radial-gradient(1.5px 1.5px at 44% 22%, #fff, transparent),
+                radial-gradient(1px 1px at 63% 12%, #fff, transparent), radial-gradient(1.5px 1.5px at 78% 26%, #fff, transparent), radial-gradient(1px 1px at 90% 9%, #fff, transparent),
+                radial-gradient(1px 1px at 6% 34%, #fff, transparent), radial-gradient(1px 1px at 52% 4%, #fff, transparent), radial-gradient(1px 1px at 84% 40%, #fff, transparent),
+                linear-gradient(#0d0221 0%, #261447 40%, #6b1e70 58%, #ff3d8b 63%, #0d0221 63.2%); }
+        .sun { position: absolute; left: 50%; bottom: 37%; width: min(70vw, 460px); aspect-ratio: 1; translate: -50% 35%; border-radius: 50%; z-index: -1;
+            background: linear-gradient(var(--sun) 10%, var(--orange) 45%, var(--pink) 80%);
+            mask: linear-gradient(#000 45%, transparent 45% 48%, #000 48% 55%, transparent 55% 59%, #000 59% 65%, transparent 65% 70%, #000 70% 76%, transparent 76% 82%, #000 82%);
+            filter: drop-shadow(0 0 60px rgba(255, 61, 139, .8)); }
+        .mountains { position: absolute; left: 0; right: 0; bottom: 37%; width: 100%; height: min(22vh, 180px); z-index: -1; }
+        .mountains path { fill: #13052e; stroke: var(--cyan); stroke-width: 2; stroke-linejoin: round; filter: drop-shadow(0 0 4px var(--cyan)); vector-effect: non-scaling-stroke; }
+        .mountains .wire { fill: none; stroke: rgba(0, 240, 255, .35); stroke-width: 1; filter: none; }
+        .palm { position: absolute; bottom: 30%; height: min(46vh, 440px); z-index: -1; fill: #0d0221; filter: drop-shadow(0 0 1px var(--pink)); }
+        .palm.l { left: -2vw; } .palm.r { right: -2vw; transform: scaleX(-1); height: min(38vh, 360px); }
+        .grid { position: absolute; left: -50%; right: -50%; bottom: 0; height: 37%; z-index: -1;
+            background: linear-gradient(transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 100% 80px,
+                linear-gradient(90deg, transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 80px 100%,
+                linear-gradient(#2a0845, var(--bg));
+            transform: perspective(600px) rotateX(50deg); transform-origin: top; will-change: background-position;
+            animation: drive 4s linear infinite; }
+        @keyframes drive { to { background-position: 0 80px, 0 0, 0 0; } }
 
-        main { max-width: 760px; margin: 0 auto; padding: 12vh 16px 4rem; display: grid; gap: 4.5rem; }
-        section { display: grid; gap: 1.25rem; justify-items: center; text-align: center; }
-        .prompt { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); font-size: 1.1rem; }
-        .prompt::before { content: '$ '; color: var(--pink); }
+        .hero::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .18) 2px 4px); }
+        .title { position: relative; z-index: 1; text-align: center; display: grid; justify-items: center; gap: .5rem; padding: 0 16px 18vh; }
+        .avatar { width: 150px; height: 150px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 5px var(--pink), 0 0 36px var(--pink); margin-bottom: .5rem; }
+        .script { font-family: 'Mr Dafoe', cursive; font-size: clamp(2.6rem, 10vw, 4.6rem); line-height: 1; color: #fff; rotate: -6deg; margin-bottom: -1.2rem; position: relative; z-index: 1;
+            text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 28px var(--pink), 0 0 56px var(--pink); }
+        .chrome { font-family: 'Audiowide', sans-serif; font-size: clamp(2.6rem, 13vw, 8rem); line-height: 1; letter-spacing: .04em;
+            background: linear-gradient(#1c3a8c 5%, #8fd3ff 42%, #fff 49%, #2b1638 51%, #b44bd6 72%, #ffd6f6 95%);
+            -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, .6);
+            filter: drop-shadow(0 2px 0 #3a0a4a) drop-shadow(0 0 18px rgba(255, 43, 214, .6)); }
+        .tagline { color: var(--cyan); letter-spacing: .3em; text-transform: uppercase; text-shadow: 0 0 8px var(--cyan); font-size: 1rem; }
 
-        h1, h2 { font-family: 'Orbitron', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
-        h1 { font-size: clamp(2rem, 8vw, 3.6rem); line-height: 1.05; color: #fff;
-            text-shadow: 0 0 6px #fff, 0 0 18px var(--pink), 0 0 42px var(--pink), 0 0 80px var(--violet); }
-        h1 .cursor { color: var(--cyan); animation: blink 1s steps(1) infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-        h2 { font-size: clamp(1.1rem, 4vw, 1.5rem); color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+        .osd { position: fixed; top: 14px; z-index: 6; font-size: 1.3rem; color: #fff; text-shadow: 2px 2px 0 rgba(0, 0, 0, .6); pointer-events: none; }
+        .osd.l { left: 18px; } .osd.r { right: 18px; text-align: right; }
+        .tracking { position: fixed; inset: 0; z-index: 4; pointer-events: none;
+            background: linear-gradient(transparent 0 46%, rgba(255, 255, 255, .05) 48%, rgba(255, 255, 255, .09) 50%, rgba(255, 255, 255, .05) 52%, transparent 54%) 0 0 / 100% 200%,
+                repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .18) 2px 4px);
+            animation: tracking 9s linear infinite; }
+        @keyframes tracking { from { background-position: 0 100%, 0 0; } to { background-position: 0 -100%, 0 0; } }
 
-        .avatar { position: relative; z-index: 1; width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--cyan);
-            box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--pink), 0 0 40px var(--pink); animation: pulse 3s ease-in-out infinite; }
-        @keyframes pulse { 50% { box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--cyan), 0 0 60px var(--cyan); } }
+        main { max-width: 820px; margin: 0 auto; padding: 5rem 16px 3rem; display: grid; gap: 5rem; }
+        section { display: grid; gap: 1.4rem; justify-items: center; text-align: center; }
+        h2 { font-family: 'Mr Dafoe', cursive; font-weight: normal; font-size: clamp(2.2rem, 8vw, 3.2rem); line-height: 1; color: #fff; rotate: -4deg;
+            text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan); }
 
-        .term { width: 100%; text-align: left; background: rgba(11, 0, 22, .8); border: 1px solid var(--pink); border-radius: 6px;
-            box-shadow: 0 0 24px rgba(255, 43, 214, .35); backdrop-filter: blur(4px); }
-        .term header { display: flex; gap: 6px; align-items: center; padding: .4rem .75rem; border-bottom: 1px solid rgba(255, 43, 214, .4); color: #b9a6d9; font-size: .8rem; }
-        .term header i { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); }
-        .term header i:nth-child(2) { background: var(--sun); } .term header i:nth-child(3) { background: var(--cyan); margin-right: .5rem; }
-        .term .body { padding: 1rem 1.25rem; display: grid; gap: .9rem; }
-        .repo { display: block; text-decoration: none; padding: .6rem .8rem; border-left: 3px solid var(--cyan); background: rgba(0, 240, 255, .05); transition: background .2s, transform .2s; }
-        .repo:hover { background: rgba(0, 240, 255, .14); transform: translateX(4px); }
-        .repo b { color: var(--cyan); font-weight: normal; font-size: 1.15rem; }
-        .repo small { display: block; color: #cfc6ea; font-size: .9rem; }
-        .repo em { font-style: normal; color: var(--sun); font-size: .85rem; }
-        .stat { color: #58e78e; text-shadow: 0 0 8px #58e78e; }
+        .cabinet { width: 100%; text-align: left; padding: 1.4rem 1.4rem 1.1rem; border: 3px double var(--cyan); background: linear-gradient(rgba(38, 20, 71, .85), rgba(13, 2, 33, .95));
+            box-shadow: 0 0 24px rgba(0, 240, 255, .25), inset 0 0 40px rgba(123, 47, 247, .25); }
+        .cabinet h3 { font-family: 'Audiowide', sans-serif; font-weight: normal; text-align: center; color: var(--sun); letter-spacing: .15em; font-size: 1rem; margin-bottom: 1rem; text-shadow: 0 0 8px var(--orange); }
+        .row { display: grid; grid-template-columns: 3.2rem 1fr auto; gap: .2rem .8rem; padding: .55rem .5rem; text-decoration: none; border-bottom: 1px dashed rgba(0, 240, 255, .25); }
+        .row:hover { background: rgba(255, 43, 214, .12); }
+        .row .rank { color: var(--pink); } .row .name { color: var(--cyan); overflow-wrap: anywhere; } .row .score { color: var(--sun); }
+        .row small { grid-column: 2 / -1; color: #bfb3e0; font-size: .85rem; }
+        .hiscore { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem .5rem 0; color: #fff; }
+        .hiscore b { font-weight: normal; color: #58e78e; text-shadow: 0 0 8px #58e78e; }
+        .coin { display: inline-block; padding: .55rem 1.4rem; text-decoration: none; font-family: 'Audiowide', sans-serif; font-size: .8rem; letter-spacing: .15em; color: var(--bg);
+            background: linear-gradient(var(--sun), var(--orange) 55%, var(--pink)); box-shadow: 0 4px 0 #8a1c6b, 0 0 24px rgba(255, 144, 31, .6); transition: translate .1s, box-shadow .1s; }
+        .coin:hover { translate: 0 2px; box-shadow: 0 2px 0 #8a1c6b, 0 0 32px rgba(255, 144, 31, .9); }
 
-        .btn { display: inline-block; padding: .5rem 1.2rem; border: 2px solid var(--pink); color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: .1em;
-            box-shadow: 0 0 12px var(--pink), inset 0 0 12px var(--pink); transition: background .2s, color .2s; }
-        .btn:hover { background: var(--pink); color: var(--bg); }
-
-        .logo { display: block; width: min(100%, 340px); padding: 1rem; filter: drop-shadow(0 0 12px rgba(88, 231, 142, .6)); transition: transform .2s; }
-        .logo:hover { transform: scale(1.04); }
+        .logo { display: block; width: min(100%, 360px); padding: 1.4rem 1.8rem; border: 1px solid rgba(88, 231, 142, .5); border-radius: 4px; background: rgba(13, 2, 33, .6);
+            box-shadow: 0 0 30px rgba(88, 231, 142, .25); transition: box-shadow .2s; }
+        .logo:hover { box-shadow: 0 0 44px rgba(88, 231, 142, .55); }
         .logo svg { display: block; width: 100%; height: auto; }
         .logo .st0 { fill: #58e78e; } .logo .st1 { fill: #48aa7b; } .logo .st2 { fill: #f4f2ff; } .logo .st3 { fill: #284898; }
 
-        .cya { font-family: 'Orbitron', sans-serif; font-size: clamp(2rem, 7vw, 3rem); color: #fff; text-shadow: 0 0 12px var(--cyan), 0 0 36px var(--cyan); }
+        .cya { font-family: 'Audiowide', sans-serif; font-size: clamp(2.4rem, 9vw, 4rem); }
+        .cya b { font-weight: normal; background: linear-gradient(#1c3a8c 5%, #8fd3ff 42%, #fff 49%, #2b1638 51%, #b44bd6 72%, #ffd6f6 95%);
+            -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 16px rgba(255, 43, 214, .6)); }
+        .hint { color: #8d7fb8; font-size: .85rem; letter-spacing: .12em; }
 
-        footer { max-width: 760px; margin: 0 auto; padding: 2rem 16px 3rem; font-size: .9rem; color: #b9a6d9; border-top: 1px dashed rgba(255, 43, 214, .4); }
-        footer h3 { font-family: 'Orbitron', sans-serif; font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--pink); margin-bottom: .5rem; }
+        footer { max-width: 820px; margin: 0 auto; padding: 2rem 16px 3rem; font-size: .9rem; color: #bfb3e0; border-top: 1px solid rgba(255, 43, 214, .35); }
+        footer h3 { font-family: 'Audiowide', sans-serif; font-weight: normal; font-size: .75rem; letter-spacing: .25em; text-transform: uppercase; color: var(--pink); margin-bottom: .5rem; }
         footer address { font-style: normal; }
         footer a { color: var(--cyan); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
+
+        .turbo .grid { animation-duration: .5s; }
+        .turbo .sun { filter: hue-rotate(160deg) drop-shadow(0 0 60px var(--cyan)); }
 
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
 </head>
 <body>
-    <div class="sky" aria-hidden="true"><div class="sun"></div></div>
-    <div class="grid" aria-hidden="true"></div>
+    <div class="osd l" aria-hidden="true">PLAY ▶<br><span id="counter">SP 0:00:00</span></div>
+    <div class="osd r" aria-hidden="true">{{ strtoupper(now()->format('M. d')) }}<br>1986</div>
+    <div class="tracking" aria-hidden="true"></div>
+
+    <header class="hero">
+        <div class="sun" aria-hidden="true"></div>
+        <svg class="mountains" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 200 L0 120 L90 60 L170 130 L260 40 L360 140 L420 110 L500 170 L580 110 L640 140 L740 30 L830 120 L910 70 L1000 130 L1000 200 Z"/>
+            <path class="wire" d="M90 60 L130 200 M90 60 L40 200 M260 40 L220 200 M260 40 L310 200 M740 30 L700 200 M740 30 L790 200 M910 70 L880 200 M910 70 L960 200 M0 160 L1000 160"/>
+        </svg>
+        <svg class="palm l" viewBox="0 0 200 400" aria-hidden="true">
+            <path d="M104 400 C98 300 92 200 104 110 L112 110 C104 200 110 300 118 400 Z"/>
+            <path d="M108 110 C80 80 40 80 0 110 C40 90 70 96 108 116 Z M108 110 C90 70 60 40 20 40 C60 56 84 80 104 118 Z M108 110 C120 70 150 44 196 46 C154 60 130 84 112 118 Z M108 110 C140 90 176 96 200 130 C170 110 140 108 110 118 Z M108 110 C104 70 110 36 132 10 C120 44 116 80 112 116 Z M108 112 C80 120 50 150 44 190 C60 156 84 132 110 120 Z"/>
+        </svg>
+        <svg class="palm r" viewBox="0 0 200 400" aria-hidden="true">            <path d="M104 400 C98 300 92 200 104 110 L112 110 C104 200 110 300 118 400 Z"/>
+            <path d="M108 110 C80 80 40 80 0 110 C40 90 70 96 108 116 Z M108 110 C90 70 60 40 20 40 C60 56 84 80 104 118 Z M108 110 C120 70 150 44 196 46 C154 60 130 84 112 118 Z M108 110 C140 90 176 96 200 130 C170 110 140 108 110 118 Z M108 110 C104 70 110 36 132 10 C120 44 116 80 112 116 Z"/>
+        </svg>
+        <div class="grid" aria-hidden="true"></div>
+
+        <div class="title">
+            <img class="avatar" src="https://avatars.githubusercontent.com/u/1874088?v=4&s=320" alt="Daniel Seuffer" width="150" height="150">
+            <p class="script">Hallo, I'm</p>
+            <h1 class="chrome">DANIEL</h1>
+            <p class="tagline">Code · Coffee · Open Source</p>
+        </div>
+    </header>
 
     <main>
         <section>
-            <img class="avatar" src="https://avatars.githubusercontent.com/u/1874088?v=4&s=320" alt="Daniel Seuffer" width="160" height="160">
-            <p class="prompt">whoami</p>
-            <h1>Hallo, I'm Daniel<span class="cursor" aria-hidden="true">_</span></h1>
-        </section>
-
-        <section>
             <h2>I do open source</h2>
-            <div class="term">
-                <header><i></i><i></i><i></i>~/github/authanram — pinned</header>
-                <div class="body">
-                    <a class="repo" href="https://github.com/InnoGE/laravel-rclone">
-                        <b>InnoGE/laravel-rclone</b> <em>★ 18 · PHP</em>
-                        <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
-                    </a>
-                    <a class="repo" href="https://github.com/InnoGE/laravel-speculation-rules-api">
-                        <b>InnoGE/laravel-speculation-rules-api</b> <em>★ 14 · PHP</em>
-                        <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
-                    </a>
-                    <p><span class="stat">3,171</span> contributions in the last year</p>
-                </div>
+            <div class="cabinet">
+                <h3>— HIGH SCORES —</h3>
+                <a class="row" href="https://github.com/InnoGE/laravel-rclone">
+                    <span class="rank">1ST</span><span class="name">InnoGE/laravel-rclone</span><span class="score">★ 18</span>
+                    <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
+                </a>
+                <a class="row" href="https://github.com/InnoGE/laravel-speculation-rules-api">
+                    <span class="rank">2ND</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="score">★ 14</span>
+                    <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
+                </a>
+                <p class="hiscore"><span>CONTRIBUTIONS / YEAR</span><b>003171</b></p>
             </div>
-            <a class="btn" href="https://github.com/authanram">github.com/authanram</a>
+            <a class="coin" href="https://github.com/authanram">INSERT COIN · GITHUB</a>
         </section>
 
         <section>
@@ -153,7 +190,8 @@
         </section>
 
         <section>
-            <p class="cya">Cya <span role="img" aria-label="space invader">👾</span></p>
+            <p class="cya"><b>Cya</b> <span role="img" aria-label="space invader">👾</span></p>
+            <p class="hint">↑ ↑ ↓ ↓ ← → ← → B A</p>
         </section>
     </main>
 
@@ -168,5 +206,20 @@
             <a href="tel:+4915735800060">+49 157 358 000 60</a>
         </address>
     </footer>
+
+    <script>
+        const start = Date.now(), counter = document.getElementById('counter');
+        setInterval(() => {
+            const s = Math.floor((Date.now() - start) / 1000);
+            counter.textContent = `SP ${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+        }, 1000);
+
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let pos = 0;
+        addEventListener('keydown', e => {
+            pos = e.key === konami[pos] ? pos + 1 : (e.key === konami[0] ? 1 : 0);
+            if (pos === konami.length) { document.body.classList.toggle('turbo'); pos = 0; }
+        });
+    </script>
 </body>
 </html>

@@ -40,9 +40,9 @@
         @keyframes blink { 50% { opacity: 0; } }
         h2 { font-size: clamp(1.1rem, 4vw, 1.5rem); color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
 
-        .avatar { width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--cyan);
-            box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--pink), 0 0 40px var(--pink), inset 0 0 20px var(--cyan); animation: pulse 3s ease-in-out infinite; }
-        @keyframes pulse { 50% { box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--cyan), 0 0 60px var(--cyan), inset 0 0 20px var(--pink); } }
+        .avatar { position: relative; z-index: 1; width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--cyan);
+            box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--pink), 0 0 40px var(--pink); animation: pulse 3s ease-in-out infinite; }
+        @keyframes pulse { 50% { box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--cyan), 0 0 60px var(--cyan); } }
 
         .term { width: 100%; text-align: left; background: rgba(11, 0, 22, .8); border: 1px solid var(--pink); border-radius: 6px;
             box-shadow: 0 0 24px rgba(255, 43, 214, .35); backdrop-filter: blur(4px); }
@@ -83,7 +83,7 @@
 
     <main>
         <section>
-            <img class="avatar" src="https://avatars.githubusercontent.com/u/1874088?v=4" alt="Daniel Seuffer" width="160" height="160">
+            <img class="avatar" src="https://avatars.githubusercontent.com/u/1874088?v=4&s=320" alt="Daniel Seuffer" width="160" height="160">
             <p class="prompt">whoami</p>
             <h1>Hallo, I'm Daniel<span class="cursor" aria-hidden="true">_</span></h1>
         </section>

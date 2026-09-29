@@ -9,15 +9,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Kaushan+Script&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite('resources/js/city.js')
+    @endif
     <style>
         :root { --pink: #ff3cac; --blue: #2b86ff; --cyan: #3ef2ff; --sun: #ffc93c; --orange: #ff6b3d; --bg: #07001a; }
         * { box-sizing: border-box; margin: 0; }
         html { background: var(--bg); color: #eae6ff; font: 18px/1.5 'Share Tech Mono', ui-monospace, monospace; }
         body { overflow-x: hidden; }
-        a { color: inherit; }
+        a { color: inherit; text-underline-offset: .2em; }
         a:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 6px; }
+        ::selection { background: var(--pink); color: var(--bg); }
+        html { scrollbar-color: var(--pink) var(--bg); }
+        .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+        .ico { width: .9em; height: .9em; fill: currentColor; vertical-align: -.1em; }
 
-        .drive { position: relative; height: min(66svh, 600px); min-height: 460px; overflow: hidden; isolation: isolate;
+        .drive { position: relative; display: grid; min-height: max(460px, min(66svh, 600px)); overflow: hidden; isolation: isolate;
             background: linear-gradient(#07001a 0%, #1d0b4d 30%, #6a0f7a 52%, #ff3cac 62%, #ff6b3d 66%, var(--bg) 66.2%); }
         .drive::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(transparent 82%, var(--bg)); }
         .sun { position: absolute; left: 50%; bottom: 34%; width: min(64vw, 420px); aspect-ratio: 1; translate: -50% 0; border-radius: 50%; z-index: -1;
@@ -34,10 +41,14 @@
         .road .lane { stroke: var(--sun); stroke-width: .8; stroke-dasharray: 6 8; animation: lane .8s linear infinite; }
         @keyframes lane { to { stroke-dashoffset: -14; } }
 
-        .hero { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 24px 16px 80px; text-align: center; }
+        .city3d { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: 0; transition: opacity 1.2s ease-out; }
+        .is-3d .city3d { opacity: 1; }
+        .is-3d :is(.sun, .city, .ground, .road) { visibility: hidden; }
+        .is-3d::after { background: radial-gradient(40% 45% at 50% 52%, rgba(7, 0, 26, .3), transparent), linear-gradient(transparent 82%, var(--bg)); }
+        .hero { position: relative; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 24px 16px 80px; text-align: center; }
         .avatar { width: 168px; height: 168px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 4px var(--blue), 0 0 30px var(--blue); margin-bottom: .6rem; }
         .hello { font-family: 'Kaushan Script', cursive; font-size: clamp(1.8rem, 6vw, 2.8rem); color: var(--sun); rotate: -5deg; text-shadow: 0 0 10px var(--orange), 0 0 26px var(--pink); }
-        .neon { font-family: 'Monoton', cursive; font-weight: normal; font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1; color: #fff; letter-spacing: .02em;
+        .neon { text-wrap: balance; font-family: 'Monoton', cursive; font-weight: normal; font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1; color: #fff; letter-spacing: .02em;
             text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 26px var(--pink), 0 0 52px var(--pink), 0 0 90px var(--blue); }
 
         .sent { margin-top: .6rem; padding: .2rem .9rem; border-radius: 999px; background: var(--bg); color: var(--cyan); letter-spacing: .12em; text-shadow: 0 0 8px var(--cyan); }
@@ -46,16 +57,17 @@
         section::before, footer::before { content: ''; position: absolute; top: 0; left: 50%; translate: -50% 0; width: min(60%, 420px); height: 1px;
             background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent); box-shadow: 0 0 10px var(--pink); }
         section { display: grid; gap: 1.6rem; justify-items: center; text-align: center; }
-        .eyebrow { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--orange); }
-        h2 { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
+        .eyebrow { margin-bottom: -1rem; font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--orange); }
+        section h2 { text-wrap: balance; font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 
+        .aside { margin-top: -1.2rem; font-size: .8rem; letter-spacing: .12em; color: #8d82b3; }
         .tape { width: min(100%, 440px); aspect-ratio: 1.6; padding: 5%; border-radius: 14px; position: relative;
             background: linear-gradient(145deg, #2b2440, #16112a); border: 2px solid #3d3560; box-shadow: 0 16px 40px rgba(0, 0, 0, .6), 0 0 30px rgba(255, 60, 172, .25); }
         .tape .label { height: 72%; border-radius: 6px; padding: 4% 5% 0; display: grid; grid-template-rows: auto 1fr; text-align: left;
             background: linear-gradient(#f4ecd8 0 30%, var(--sun) 30% 40%, var(--orange) 40% 50%, var(--pink) 50% 60%, #f4ecd8 60%); color: #1b1030; }
         .tape .label b { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(.9rem, 3.6vw, 1.3rem); line-height: 1.1; white-space: nowrap; }
         .tape .label span { font-size: .7rem; letter-spacing: .15em; }
-        .tape .label a { color: #ff2d20; text-decoration: none; }
+        .tape .label a { color: #c4190f; text-decoration: none; }
         .tape .label a:hover { text-decoration: underline; }
         .tape .window { position: absolute; left: 25%; right: 25%; top: 45%; height: 22%; border-radius: 40px; background: #0d0a1c; border: 2px solid #3d3560;
             display: flex; justify-content: space-between; align-items: center; padding: 0 6%; }
@@ -70,13 +82,15 @@
         .tracks { width: min(100%, 520px); list-style: none; padding: 0; text-align: left; border-top: 1px solid rgba(62, 242, 255, .3); }
         .tracks a { display: grid; grid-template-columns: 2.2rem 1fr auto; gap: 0 .6rem; padding: .6rem .3rem; text-decoration: none; border-bottom: 1px solid rgba(62, 242, 255, .3); }
         .tracks a:hover { background: rgba(255, 60, 172, .12); }
-        .tracks .no { color: var(--pink); } .tracks .name { color: var(--cyan); overflow-wrap: anywhere; } .tracks .len { color: var(--sun); }
-        .tracks small { grid-column: 2 / -1; color: #b3a9d6; font-size: .8rem; }
+        .tracks a:focus-visible { outline-offset: 2px; }
+        .tracks .no { color: var(--pink); } .tracks .name { color: var(--cyan); overflow-wrap: anywhere; } .tracks .len { color: var(--sun); font-variant-numeric: tabular-nums; }
+        .tracks small { text-wrap: pretty; grid-column: 2 / -1; color: #b3a9d6; font-size: .8rem; }
         .total { width: min(100%, 520px); display: flex; justify-content: space-between; color: #b3a9d6; font-size: .9rem; }
-        .total b { color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e; }
+        .total b { font-variant-numeric: tabular-nums; color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e; }
         .play { display: inline-flex; gap: .6rem; align-items: center; padding: .5rem 1.3rem; border-radius: 999px; text-decoration: none; color: #fff; border: 2px solid var(--pink);
-            box-shadow: 0 0 14px var(--pink), inset 0 0 14px rgba(255, 60, 172, .5); transition: background .2s; }
-        .play:hover { background: var(--pink); }
+            box-shadow: 0 0 14px var(--pink), inset 0 0 14px rgba(255, 60, 172, .5); transition: background .2s, color .2s, translate .1s; }
+        .play:hover { background: var(--pink); color: var(--bg); }
+        .play:active { translate: 0 1px; }
 
         .sign { display: block; width: min(100%, 360px); padding: 1.3rem 1.8rem; border-radius: 16px; border: 3px solid #58e78e;
             box-shadow: 0 0 10px #58e78e, 0 0 36px rgba(88, 231, 142, .45), inset 0 0 18px rgba(88, 231, 142, .35); transition: box-shadow .2s; }
@@ -88,9 +102,9 @@
         .cya { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 10vw, 4rem); color: #fff; text-shadow: 0 0 8px var(--cyan), 0 0 24px var(--cyan), 0 0 48px var(--blue); }
 
         footer { font-size: .85rem; color: #b3a9d6; }
-        footer h3 { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--pink); margin-bottom: .4rem; }
+        footer h2 { font-weight: normal; font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--pink); margin-bottom: .4rem; }
         footer address { font-style: normal; }
-        footer a { color: var(--cyan); text-decoration: none; }
+        footer a { display: inline-block; padding-block: .2rem; color: var(--cyan); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
 
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -123,6 +137,7 @@
         <section>
             <p class="eyebrow">Side A</p>
             <h2>I do open source</h2>
+            <p class="aside">(sometimes)</p>
             <div class="tape">
                 <span class="side" aria-hidden="true">A</span>
                 <div class="label"><b>authanram — Open Source Mix</b><span>C-90 · HIGH BIAS · PHP · <a href="https://laravel.com">LARAVEL</a></span></div>
@@ -131,16 +146,16 @@
             </div>
             <ol class="tracks">
                 <li><a href="https://github.com/InnoGE/laravel-rclone">
-                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span><span class="len">★ 18</span>
+                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span><span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> 18<span class="sr"> stars</span></span>
                     <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
                 </a></li>
                 <li><a href="https://github.com/InnoGE/laravel-speculation-rules-api">
-                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="len">★ 14</span>
+                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> 14<span class="sr"> stars</span></span>
                     <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
                 </a></li>
             </ol>
             <p class="total"><span>Contributions in the last year</span><b>3,171</b></p>
-            <a class="play" href="https://github.com/authanram">▶ Play on GitHub</a>
+            <a class="play" href="https://github.com/authanram"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Play on GitHub</a>
         </section>
 
         <section>
@@ -204,7 +219,7 @@
     </main>
 
     <footer>
-        <h3>Imprint</h3>
+        <h2>Imprint</h2>
         <address>
             Daniel Seuffer<br>
             Judengasse 3<br>

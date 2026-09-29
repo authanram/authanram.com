@@ -83,6 +83,7 @@
         .sign svg { display: block; width: 100%; height: auto; }
         .sign .st0 { fill: #58e78e; } .sign .st1 { fill: #48aa7b; } .sign .st2 { fill: #f4f2ff; } .sign .st3 { fill: #284898; }
 
+        .cat { font: 1.4rem/1.2 'Share Tech Mono', monospace; color: var(--sun); text-shadow: 0 0 10px var(--orange); }
         .cya { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 10vw, 4rem); color: #fff; text-shadow: 0 0 8px var(--cyan), 0 0 24px var(--cyan), 0 0 48px var(--blue); }
 
         footer { font-size: .85rem; color: #b3a9d6; }
@@ -185,6 +186,14 @@
 <path class="st2" d="M953.3,227.1V89.6h95.5v24h-65.5v32.8h60.6v24h-60.6v32.8h65.8v24L953.3,227.1z"/>
 </svg>
             </a>
+        </section>
+
+        <section>
+            <p class="eyebrow">Bonus Track</p>
+            <h2>I like cats</h2>
+            <pre class="cat" aria-hidden="true"> /\_/\
+( o.o )
+ > ^ <</pre>
         </section>
 
         <section>

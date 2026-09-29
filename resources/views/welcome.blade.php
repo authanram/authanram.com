@@ -54,6 +54,8 @@
             background: linear-gradient(#f4ecd8 0 30%, var(--sun) 30% 40%, var(--orange) 40% 50%, var(--pink) 50% 60%, #f4ecd8 60%); color: #1b1030; }
         .tape .label b { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(.9rem, 3.6vw, 1.3rem); line-height: 1.1; white-space: nowrap; }
         .tape .label span { font-size: .7rem; letter-spacing: .15em; }
+        .tape .label a { color: #ff2d20; text-decoration: none; }
+        .tape .label a:hover { text-decoration: underline; }
         .tape .window { position: absolute; left: 25%; right: 25%; top: 45%; height: 22%; border-radius: 40px; background: #0d0a1c; border: 2px solid #3d3560;
             display: flex; justify-content: space-between; align-items: center; padding: 0 6%; }
         .reel { height: 78%; aspect-ratio: 1; border-radius: 50%; border: 4px dotted #eae6ff; animation: spin 3s linear infinite; }
@@ -119,11 +121,11 @@
         <section>
             <p class="eyebrow">Side A</p>
             <h2>I do open source</h2>
-            <div class="tape" aria-hidden="true">
-                <span class="side">A</span>
-                <div class="label"><b>authanram — Open Source Mix</b><span>C-90 · HIGH BIAS · PHP</span></div>
-                <div class="window"><i class="reel"></i><i class="reel"></i></div>
-                <div class="screws"><i></i><i></i><i></i></div>
+            <div class="tape">
+                <span class="side" aria-hidden="true">A</span>
+                <div class="label"><b>authanram — Open Source Mix</b><span>C-90 · HIGH BIAS · PHP · <a href="https://laravel.com">LARAVEL</a></span></div>
+                <div class="window" aria-hidden="true"><i class="reel"></i><i class="reel"></i></div>
+                <div class="screws" aria-hidden="true"><i></i><i></i><i></i></div>
             </div>
             <ol class="tracks">
                 <li><a href="https://github.com/InnoGE/laravel-rclone">

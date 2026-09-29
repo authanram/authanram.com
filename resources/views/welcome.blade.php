@@ -16,7 +16,7 @@
         a { color: inherit; }
         a:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 6px; }
 
-        .hero { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; isolation: isolate; z-index: 5;
+        .hero { position: relative; min-height: min(82svh, 760px); display: grid; place-items: center; overflow: hidden; isolation: isolate; z-index: 5;
             background: radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 8%, #fff, transparent), radial-gradient(1.5px 1.5px at 44% 22%, #fff, transparent),
                 radial-gradient(1px 1px at 63% 12%, #fff, transparent), radial-gradient(1.5px 1.5px at 78% 26%, #fff, transparent), radial-gradient(1px 1px at 90% 9%, #fff, transparent),
                 radial-gradient(1px 1px at 6% 34%, #fff, transparent), radial-gradient(1px 1px at 52% 4%, #fff, transparent), radial-gradient(1px 1px at 84% 40%, #fff, transparent),
@@ -38,8 +38,8 @@
             animation: drive 4s linear infinite; }
         @keyframes drive { to { background-position: 0 80px, 0 0, 0 0; } }
 
-        .hero::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .18) 2px 4px); }
-        .title { position: relative; z-index: 1; text-align: center; display: grid; justify-items: center; gap: .5rem; padding: 0 16px 18vh; }
+        .hero::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(transparent 80%, var(--bg)), repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .18) 2px 4px); }
+        .title { position: relative; z-index: 1; text-align: center; display: grid; justify-items: center; gap: .4rem; padding: 3rem 16px 14vh; }
         .avatar { width: 150px; height: 150px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 5px var(--pink), 0 0 36px var(--pink); margin-bottom: .5rem; }
         .script { font-family: 'Mr Dafoe', cursive; font-size: clamp(2.6rem, 10vw, 4.6rem); line-height: 1; color: #fff; rotate: -6deg; margin-bottom: -1.2rem; position: relative; z-index: 1;
             text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 28px var(--pink), 0 0 56px var(--pink); }
@@ -57,8 +57,8 @@
             animation: tracking 9s linear infinite; }
         @keyframes tracking { from { background-position: 0 100%, 0 0; } to { background-position: 0 -100%, 0 0; } }
 
-        main { max-width: 820px; margin: 0 auto; padding: 5rem 16px 3rem; display: grid; gap: 5rem; }
-        section { display: grid; gap: 1.4rem; justify-items: center; text-align: center; }
+        main { max-width: 820px; margin: 0 auto; padding: 2rem 16px 2rem; display: grid; gap: 3rem; }
+        section { display: grid; gap: 1rem; justify-items: center; text-align: center; }
         h2 { font-family: 'Mr Dafoe', cursive; font-weight: normal; font-size: clamp(2.2rem, 8vw, 3.2rem); line-height: 1; color: #fff; rotate: -4deg;
             text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan); }
 
@@ -86,7 +86,7 @@
             -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 16px rgba(255, 43, 214, .6)); }
         .hint { color: #8d7fb8; font-size: .85rem; letter-spacing: .12em; }
 
-        footer { max-width: 820px; margin: 0 auto; padding: 2rem 16px 3rem; font-size: .9rem; color: #bfb3e0; border-top: 1px solid rgba(255, 43, 214, .35); }
+        footer { max-width: 820px; margin: 0 auto; padding: 1.5rem 16px 2rem; font-size: .9rem; color: #bfb3e0; border-top: 1px solid rgba(255, 43, 214, .35); }
         footer h3 { font-family: 'Audiowide', sans-serif; font-weight: normal; font-size: .75rem; letter-spacing: .25em; text-transform: uppercase; color: var(--pink); margin-bottom: .5rem; }
         footer address { font-style: normal; }
         footer a { color: var(--cyan); text-decoration: none; }

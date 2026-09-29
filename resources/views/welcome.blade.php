@@ -83,7 +83,7 @@
         .sign svg { display: block; width: 100%; height: auto; }
         .sign .st0 { fill: #58e78e; } .sign .st1 { fill: #48aa7b; } .sign .st2 { fill: #f4f2ff; } .sign .st3 { fill: #284898; }
 
-        .cat { font: 1.4rem/1.2 'Share Tech Mono', monospace; color: var(--sun); text-shadow: 0 0 10px var(--orange); }
+        .cat { font: 1.4rem/1.2 'Share Tech Mono', monospace; text-align: left; color: var(--sun); text-shadow: 0 0 10px var(--orange); }
         .cya { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 10vw, 4rem); color: #fff; text-shadow: 0 0 8px var(--cyan), 0 0 24px var(--cyan), 0 0 48px var(--blue); }
 
         footer { font-size: .85rem; color: #b3a9d6; }

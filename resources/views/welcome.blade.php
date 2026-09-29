@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Daniel Seuffer</title>
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x2="0" y2="1"><stop offset="0" stop-color="%23ffc93c"/><stop offset=".6" stop-color="%23ff6b3d"/><stop offset="1" stop-color="%23ff3cac"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="%2307001a"/><circle cx="32" cy="32" r="22" fill="url%28%23g%29"/><path fill="%2307001a" d="M8 34h48v2H8zm0 6h48v3H8zm0 7h48v4H8z"/><path fill="%233ef2ff" d="M6 52h52v2H6z"/></svg>'>
     <meta name="description" content="Hallo, I'm Daniel. I do open source and work for InnoGE.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

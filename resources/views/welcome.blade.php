@@ -39,12 +39,10 @@
         .neon { font-family: 'Monoton', cursive; font-weight: normal; font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1; color: #fff; letter-spacing: .02em;
             text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 26px var(--pink), 0 0 52px var(--pink), 0 0 90px var(--blue); }
 
-        section, footer { --glow: var(--pink); padding: 2.2rem max(16px, calc((100% - 760px) / 2)); border-top: 1px solid rgba(255, 255, 255, .1);
-            background: radial-gradient(60% 120px at 50% 0, color-mix(in srgb, var(--glow) 18%, transparent), transparent), var(--band, #0b0322); }
+        section, footer { position: relative; padding: 2.2rem max(16px, calc((100% - 760px) / 2)); }
+        section::before, footer::before { content: ''; position: absolute; top: 0; left: 50%; translate: -50% 0; width: min(60%, 420px); height: 1px;
+            background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent); box-shadow: 0 0 10px var(--pink); }
         section { display: grid; gap: .8rem; justify-items: center; text-align: center; }
-        section:nth-child(2) { --glow: #58e78e; --band: #0e0529; }
-        section:nth-child(3) { --glow: var(--cyan); }
-        footer { --glow: var(--blue); --band: #06001a; }
         .eyebrow { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--orange); }
         h2 { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 

@@ -60,6 +60,7 @@
         .eyebrow { margin-bottom: -1rem; font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--orange); }
         section h2 { text-wrap: balance; font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 
+        .aside { margin-top: -1.2rem; font-size: .8rem; letter-spacing: .12em; color: #8d82b3; }
         .tape { width: min(100%, 440px); aspect-ratio: 1.6; padding: 5%; border-radius: 14px; position: relative;
             background: linear-gradient(145deg, #2b2440, #16112a); border: 2px solid #3d3560; box-shadow: 0 16px 40px rgba(0, 0, 0, .6), 0 0 30px rgba(255, 60, 172, .25); }
         .tape .label { height: 72%; border-radius: 6px; padding: 4% 5% 0; display: grid; grid-template-rows: auto 1fr; text-align: left;
@@ -136,6 +137,7 @@
         <section>
             <p class="eyebrow">Side A</p>
             <h2>I do open source</h2>
+            <p class="aside">(sometimes)</p>
             <div class="tape">
                 <span class="side" aria-hidden="true">A</span>
                 <div class="label"><b>authanram — Open Source Mix</b><span>C-90 · HIGH BIAS · PHP · <a href="https://laravel.com">LARAVEL</a></span></div>

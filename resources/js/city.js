@@ -5,8 +5,8 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 
-const FOG_COLOR = new THREE.Color('#1c0738');
-const FOG_DENSITY = 0.003;
+const FOG_COLOR = new THREE.Color('#3a0a4a');
+const FOG_DENSITY = 0.0019;
 const AVENUE = 13;
 const PINK = new THREE.Color(1.6, 0.15, 0.9);
 const CYAN = new THREE.Color(0.15, 1.2, 1.6);
@@ -25,6 +25,7 @@ const sharedGlsl = /* glsl */ `
 `;
 
 const time = { value: 0 };
+const flow = { value: 0 };
 const sharedUniforms = () => ({
     uFogColor: { value: FOG_COLOR },
     uFogDensity: { value: FOG_DENSITY },
@@ -163,6 +164,57 @@ function neonMesh(towers, rand) {
     return mesh;
 }
 
+function terrainMesh() {
+    const geometry = new THREE.PlaneGeometry(760, 320, 152, 64);
+    geometry.rotateX(-Math.PI / 2);
+    geometry.translate(0, 0, 150);
+
+    const mesh = new THREE.Mesh(
+        geometry,
+        new THREE.ShaderMaterial({
+            uniforms: { ...sharedUniforms(), uOffset: flow },
+            vertexShader: /* glsl */ `
+                uniform float uOffset;
+                varying vec3 vWorld;
+                varying float vHill;
+                varying float vDepth;
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+                float noise(vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    f = f * f * (3.0 - 2.0 * f);
+                    return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+                }
+                void main() {
+                    vec3 p = position;
+                    vec2 q = vec2(p.x, p.z - uOffset);
+                    float n = noise(q * 0.025) * 0.7 + noise(q * 0.07) * 0.3;
+                    vHill = smoothstep(12.0, 80.0, abs(p.x)) * smoothstep(20.0, 110.0, p.z);
+                    p.y = n * 46.0 * vHill;
+                    vec4 world = modelMatrix * vec4(p, 1.0);
+                    vWorld = vec3(world.x, world.y, world.z - uOffset);
+                    vec4 view = viewMatrix * world;
+                    vDepth = -view.z;
+                    gl_Position = projectionMatrix * view;
+                }
+            `,
+            fragmentShader: /* glsl */ `
+                varying vec3 vWorld;
+                ${sharedGlsl}
+                void main() {
+                    vec2 cell = vWorld.xz / 7.0;
+                    vec2 g = abs(fract(cell - 0.5) - 0.5) / fwidth(cell);
+                    float line = 1.0 - min(min(g.x, g.y) * 0.8, 1.0);
+                    vec3 col = vec3(0.03, 0.005, 0.07) + vec3(1.5, 0.15, 0.95) * line;
+                    gl_FragColor = vec4(applyFog(col), 1.0);
+                }
+            `,
+        }),
+    );
+
+    return mesh;
+}
+
 function floor(width, height) {
     const group = new THREE.Group();
     const mirror = new Reflector(new THREE.PlaneGeometry(900, 900), {
@@ -172,32 +224,7 @@ function floor(width, height) {
     });
     mirror.rotation.x = -Math.PI / 2;
 
-    const grid = new THREE.Mesh(
-        new THREE.PlaneGeometry(900, 900),
-        new THREE.ShaderMaterial({
-            uniforms: sharedUniforms(),
-            transparent: true,
-            depthWrite: false,
-            vertexShader: worldVertex,
-            fragmentShader: /* glsl */ `
-                varying vec3 vWorld;
-                ${sharedGlsl}
-                float line(float v, float w) { return 1.0 - smoothstep(0.0, w, abs(v)); }
-                void main() {
-                    vec2 p = vWorld.xz / 6.0;
-                    float g = max(line(fract(p.x) - 0.5, 0.012), line(fract(p.y) - 0.5, 0.012));
-                    float edge = line(abs(vWorld.x) - ${AVENUE.toFixed(1)}, 0.1);
-                    vec3 col = vec3(1.0, 0.25, 0.75) * g * 0.35 + vec3(0.3, 0.95, 1.0) * edge;
-                    float fade = exp(-vDepth * 0.012);
-                    gl_FragColor = vec4(col, max(g * 0.5, edge) * fade);
-                }
-            `,
-        }),
-    );
-    grid.rotation.x = -Math.PI / 2;
-    grid.position.y = 0.02;
-
-    group.add(mirror, grid);
+    group.add(mirror);
     group.userData.resize = (w, h) => mirror.getRenderTarget().setSize(w, h);
 
     return group;
@@ -223,8 +250,9 @@ function skyMesh() {
                 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
                 void main() {
                     float y = max(vDir.y, 0.0);
-                    vec3 col = mix(vec3(0.55, 0.1, 0.5), vec3(0.18, 0.05, 0.42), smoothstep(0.0, 0.25, y));
-                    col = mix(col, vec3(0.04, 0.01, 0.14), smoothstep(0.2, 0.8, y));
+                    vec3 col = mix(vec3(0.95, 0.32, 0.18), vec3(0.45, 0.06, 0.4), smoothstep(0.0, 0.1, y));
+                    col = mix(col, vec3(0.08, 0.02, 0.2), smoothstep(0.08, 0.3, y));
+                    col = mix(col, vec3(0.02, 0.0, 0.06), smoothstep(0.3, 0.7, y));
                     vec2 cell = floor(vec2(atan(vDir.x, vDir.z), vDir.y) * 180.0);
                     float star = step(0.996, hash(cell));
                     col += star * (0.5 + 0.5 * sin(uTime * 2.0 + hash(cell + 3.0) * 60.0)) * smoothstep(0.15, 0.4, y);
@@ -366,13 +394,13 @@ function start(host) {
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.5, 1500);
     camera.rotation.order = 'YXZ';
-    camera.position.set(0, 2.2, 14);
+    camera.position.set(0, 12, 285);
 
     const rand = mulberry32(1982);
     const towers = layout(rand);
     const ground = floor(512, 512);
     const traffic = trafficMesh(rand, 40);
-    scene.add(skyMesh(), towerMesh(towers), neonMesh(towers, rand), decorations(towers, rand), ground, traffic);
+    scene.add(skyMesh(), towerMesh(towers), neonMesh(towers, rand), decorations(towers, rand), ground, terrainMesh(), traffic);
 
     const composer = new EffectComposer(renderer);
     const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.6, 0.4, 0.8);
@@ -411,7 +439,8 @@ function start(host) {
         time.value += dt;
         look.x += (pointer.x - look.x) * 0.04;
         look.y += (pointer.y - look.y) * 0.04;
-        camera.rotation.set(0.26 - look.y * 0.08 + Math.sin(time.value * 0.15) * 0.01, -look.x * 0.18 + Math.sin(time.value * 0.1) * 0.02, 0);
+        camera.rotation.set(0.04 - look.y * 0.08 + Math.sin(time.value * 0.15) * 0.01, -look.x * 0.18 + Math.sin(time.value * 0.1) * 0.02, 0);
+        flow.value += dt * 14;
         traffic.userData.update(dt);
 
         composer.render();

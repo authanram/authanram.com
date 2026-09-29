@@ -7,146 +7,134 @@
     <meta name="description" content="Hallo, I'm Daniel. I do open source and work for InnoGE.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Mr+Dafoe&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Kaushan+Script&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { --pink: #ff2bd6; --cyan: #00f0ff; --violet: #7b2ff7; --sun: #ffd319; --orange: #ff901f; --bg: #0d0221; }
+        :root { --pink: #ff3cac; --blue: #2b86ff; --cyan: #3ef2ff; --sun: #ffc93c; --orange: #ff6b3d; --bg: #07001a; }
         * { box-sizing: border-box; margin: 0; }
-        html { background: var(--bg); color: #ece8ff; font: 22px/1.4 'VT323', ui-monospace, monospace; }
+        html { background: var(--bg); color: #eae6ff; font: 18px/1.5 'Share Tech Mono', ui-monospace, monospace; }
         body { overflow-x: hidden; }
         a { color: inherit; }
         a:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 6px; }
 
-        .hero { position: relative; min-height: min(82svh, 760px); display: grid; place-items: center; overflow: hidden; isolation: isolate; z-index: 5;
-            background: radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 8%, #fff, transparent), radial-gradient(1.5px 1.5px at 44% 22%, #fff, transparent),
-                radial-gradient(1px 1px at 63% 12%, #fff, transparent), radial-gradient(1.5px 1.5px at 78% 26%, #fff, transparent), radial-gradient(1px 1px at 90% 9%, #fff, transparent),
-                radial-gradient(1px 1px at 6% 34%, #fff, transparent), radial-gradient(1px 1px at 52% 4%, #fff, transparent), radial-gradient(1px 1px at 84% 40%, #fff, transparent),
-                linear-gradient(#0d0221 0%, #261447 40%, #6b1e70 58%, #ff3d8b 63%, #0d0221 63.2%); }
-        .sun { position: absolute; left: 50%; bottom: 37%; width: min(70vw, 460px); aspect-ratio: 1; translate: -50% 35%; border-radius: 50%; z-index: -1;
-            background: linear-gradient(var(--sun) 10%, var(--orange) 45%, var(--pink) 80%);
-            mask: linear-gradient(#000 45%, transparent 45% 48%, #000 48% 55%, transparent 55% 59%, #000 59% 65%, transparent 65% 70%, #000 70% 76%, transparent 76% 82%, #000 82%);
-            filter: drop-shadow(0 0 60px rgba(255, 61, 139, .8)); }
-        .mountains { position: absolute; left: 0; right: 0; bottom: 37%; width: 100%; height: min(22vh, 180px); z-index: -1; }
-        .mountains path { fill: #13052e; stroke: var(--cyan); stroke-width: 2; stroke-linejoin: round; filter: drop-shadow(0 0 4px var(--cyan)); vector-effect: non-scaling-stroke; }
-        .mountains .wire { fill: none; stroke: rgba(0, 240, 255, .35); stroke-width: 1; filter: none; }
-        .palm { position: absolute; bottom: 30%; height: min(46vh, 440px); z-index: -1; fill: #0d0221; filter: drop-shadow(0 0 1px var(--pink)); }
-        .palm.l { left: -2vw; } .palm.r { right: -2vw; transform: scaleX(-1); height: min(38vh, 360px); }
-        .grid { position: absolute; left: -50%; right: -50%; bottom: 0; height: 37%; z-index: -1;
-            background: linear-gradient(transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 100% 80px,
-                linear-gradient(90deg, transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 80px 100%,
-                linear-gradient(#2a0845, var(--bg));
-            transform: perspective(600px) rotateX(50deg); transform-origin: top; will-change: background-position;
-            animation: drive 4s linear infinite; }
-        @keyframes drive { to { background-position: 0 80px, 0 0, 0 0; } }
+        .drive { position: relative; height: min(78svh, 720px); min-height: 520px; overflow: hidden; isolation: isolate;
+            background: linear-gradient(#07001a 0%, #1d0b4d 30%, #6a0f7a 52%, #ff3cac 62%, #ff6b3d 66%, var(--bg) 66.2%); }
+        .drive::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(transparent 82%, var(--bg)); }
+        .sun { position: absolute; left: 50%; bottom: 34%; width: min(64vw, 420px); aspect-ratio: 1; translate: -50% 0; border-radius: 50%; z-index: -1;
+            background: linear-gradient(#fff3b0, var(--sun) 30%, var(--orange) 60%, var(--pink));
+            mask: linear-gradient(#000 50%, transparent 50% 52%, #000 52% 60%, transparent 60% 63%, #000 63% 70%, transparent 70% 74%, #000 74% 80%, transparent 80% 85%, #000 85% 89%, transparent 89%);
+            filter: drop-shadow(0 0 50px var(--pink)); }
+        .city { position: absolute; left: 0; bottom: 34%; width: 100%; height: min(26vh, 220px); z-index: -1; }
+        .city .far { fill: #2a0c55; }
+        .city .near { fill: #0c0326; }
+        .city .edge { fill: none; stroke: var(--pink); stroke-width: 1.5; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px var(--pink)); }
+        .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; z-index: -2; background: linear-gradient(#1b0540, var(--bg)); border-top: 2px solid var(--cyan); box-shadow: 0 0 18px var(--cyan); }
+        .road { position: absolute; left: 0; bottom: 0; width: 100%; height: 34%; z-index: -1; }
+        .road .edge { stroke: var(--cyan); stroke-width: 2; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 4px var(--cyan)); }
+        .road .lane { stroke: var(--sun); stroke-width: .8; stroke-dasharray: 6 8; animation: lane .8s linear infinite; }
+        @keyframes lane { to { stroke-dashoffset: -14; } }
 
-        .hero::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(transparent 80%, var(--bg)), repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .18) 2px 4px); }
-        .title { position: relative; z-index: 1; text-align: center; display: grid; justify-items: center; gap: .4rem; padding: 3rem 16px 14vh; }
-        .avatar { width: 150px; height: 150px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 5px var(--pink), 0 0 36px var(--pink); margin-bottom: .5rem; }
-        .script { font-family: 'Mr Dafoe', cursive; font-size: clamp(2.6rem, 10vw, 4.6rem); line-height: 1; color: #fff; rotate: -6deg; margin-bottom: -1.2rem; position: relative; z-index: 1;
-            text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 28px var(--pink), 0 0 56px var(--pink); }
-        .chrome { font-family: 'Audiowide', sans-serif; font-size: clamp(2.6rem, 13vw, 8rem); line-height: 1; letter-spacing: .04em;
-            background: linear-gradient(#1c3a8c 5%, #8fd3ff 42%, #fff 49%, #2b1638 51%, #b44bd6 72%, #ffd6f6 95%);
-            -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, .6);
-            filter: drop-shadow(0 2px 0 #3a0a4a) drop-shadow(0 0 18px rgba(255, 43, 214, .6)); }
-        .tagline { color: var(--cyan); letter-spacing: .3em; text-transform: uppercase; text-shadow: 0 0 8px var(--cyan); font-size: 1rem; }
+        .hero { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 0 16px 14vh; text-align: center; }
+        .avatar { width: 132px; height: 132px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 4px var(--blue), 0 0 30px var(--blue); margin-bottom: .6rem; }
+        .hello { font-family: 'Kaushan Script', cursive; font-size: clamp(1.8rem, 6vw, 2.8rem); color: var(--sun); rotate: -5deg; text-shadow: 0 0 10px var(--orange), 0 0 26px var(--pink); }
+        .neon { font-family: 'Monoton', cursive; font-weight: normal; font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1; color: #fff; letter-spacing: .02em;
+            text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 26px var(--pink), 0 0 52px var(--pink), 0 0 90px var(--blue); }
 
-        .osd { position: fixed; top: 14px; z-index: 6; font-size: 1.3rem; color: #fff; text-shadow: 2px 2px 0 rgba(0, 0, 0, .6); pointer-events: none; }
-        .osd.l { left: 18px; } .osd.r { right: 18px; text-align: right; }
-        .tracking { position: fixed; inset: 0; z-index: 4; pointer-events: none;
-            background: linear-gradient(transparent 0 46%, rgba(255, 255, 255, .05) 48%, rgba(255, 255, 255, .09) 50%, rgba(255, 255, 255, .05) 52%, transparent 54%) 0 0 / 100% 200%,
-                repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, .18) 2px 4px);
-            animation: tracking 9s linear infinite; }
-        @keyframes tracking { from { background-position: 0 100%, 0 0; } to { background-position: 0 -100%, 0 0; } }
-
-        main { max-width: 820px; margin: 0 auto; padding: 2rem 16px 2rem; display: grid; gap: 3rem; }
+        main { max-width: 760px; margin: 0 auto; padding: 1.5rem 16px 2rem; display: grid; gap: 3rem; }
         section { display: grid; gap: 1rem; justify-items: center; text-align: center; }
-        h2 { font-family: 'Mr Dafoe', cursive; font-weight: normal; font-size: clamp(2.2rem, 8vw, 3.2rem); line-height: 1; color: #fff; rotate: -4deg;
-            text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan); }
+        h2 { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 
-        .cabinet { width: 100%; text-align: left; padding: 1.4rem 1.4rem 1.1rem; border: 3px double var(--cyan); background: linear-gradient(rgba(38, 20, 71, .85), rgba(13, 2, 33, .95));
-            box-shadow: 0 0 24px rgba(0, 240, 255, .25), inset 0 0 40px rgba(123, 47, 247, .25); }
-        .cabinet h3 { font-family: 'Audiowide', sans-serif; font-weight: normal; text-align: center; color: var(--sun); letter-spacing: .15em; font-size: 1rem; margin-bottom: 1rem; text-shadow: 0 0 8px var(--orange); }
-        .row { display: grid; grid-template-columns: 3.2rem 1fr auto; gap: .2rem .8rem; padding: .55rem .5rem; text-decoration: none; border-bottom: 1px dashed rgba(0, 240, 255, .25); }
-        .row:hover { background: rgba(255, 43, 214, .12); }
-        .row .rank { color: var(--pink); } .row .name { color: var(--cyan); overflow-wrap: anywhere; } .row .score { color: var(--sun); }
-        .row small { grid-column: 2 / -1; color: #bfb3e0; font-size: .85rem; }
-        .hiscore { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem .5rem 0; color: #fff; }
-        .hiscore b { font-weight: normal; color: #58e78e; text-shadow: 0 0 8px #58e78e; }
-        .coin { display: inline-block; padding: .55rem 1.4rem; text-decoration: none; font-family: 'Audiowide', sans-serif; font-size: .8rem; letter-spacing: .15em; color: var(--bg);
-            background: linear-gradient(var(--sun), var(--orange) 55%, var(--pink)); box-shadow: 0 4px 0 #8a1c6b, 0 0 24px rgba(255, 144, 31, .6); transition: translate .1s, box-shadow .1s; }
-        .coin:hover { translate: 0 2px; box-shadow: 0 2px 0 #8a1c6b, 0 0 32px rgba(255, 144, 31, .9); }
+        .tape { width: min(100%, 520px); aspect-ratio: 1.6; padding: 5%; border-radius: 14px; position: relative;
+            background: linear-gradient(145deg, #2b2440, #16112a); border: 2px solid #3d3560; box-shadow: 0 16px 40px rgba(0, 0, 0, .6), 0 0 30px rgba(255, 60, 172, .25); }
+        .tape .label { height: 72%; border-radius: 6px; padding: 4% 5% 0; display: grid; grid-template-rows: auto 1fr; text-align: left;
+            background: linear-gradient(#f4ecd8 0 30%, var(--sun) 30% 40%, var(--orange) 40% 50%, var(--pink) 50% 60%, #f4ecd8 60%); color: #1b1030; }
+        .tape .label b { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1rem, 4vw, 1.5rem); line-height: 1.1; }
+        .tape .label span { font-size: .7rem; letter-spacing: .15em; }
+        .tape .window { position: absolute; left: 25%; right: 25%; top: 45%; height: 22%; border-radius: 40px; background: #0d0a1c; border: 2px solid #3d3560;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 6%; }
+        .reel { height: 78%; aspect-ratio: 1; border-radius: 50%; border: 4px dotted #eae6ff; animation: spin 3s linear infinite; }
+        .tape:hover .reel { animation-duration: .6s; }
+        @keyframes spin { to { rotate: 360deg; } }
+        .tape .side { position: absolute; left: 7%; top: 8%; font-family: 'Share Tech Mono', monospace; font-size: .75rem; background: #1b1030; color: #f4ecd8; padding: 0 .4rem; border-radius: 3px; }
+        .tape::after { content: ''; position: absolute; left: 18%; right: 18%; bottom: 0; height: 18%; background: #221b38; border: 2px solid #3d3560; border-bottom: 0; clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%); }
+        .tape .screws { z-index: 1; position: absolute; inset: auto 10% 6%; display: flex; justify-content: space-between; }
+        .tape .screws i { width: 10px; height: 10px; border-radius: 50%; background: #3d3560; }
 
-        .logo { display: block; width: min(100%, 360px); padding: 1.4rem 1.8rem; border: 1px solid rgba(88, 231, 142, .5); border-radius: 4px; background: rgba(13, 2, 33, .6);
-            box-shadow: 0 0 30px rgba(88, 231, 142, .25); transition: box-shadow .2s; }
-        .logo:hover { box-shadow: 0 0 44px rgba(88, 231, 142, .55); }
-        .logo svg { display: block; width: 100%; height: auto; }
-        .logo .st0 { fill: #58e78e; } .logo .st1 { fill: #48aa7b; } .logo .st2 { fill: #f4f2ff; } .logo .st3 { fill: #284898; }
+        .tracks { width: min(100%, 520px); list-style: none; padding: 0; text-align: left; border-top: 1px solid rgba(62, 242, 255, .3); }
+        .tracks a { display: grid; grid-template-columns: 2.2rem 1fr auto; gap: 0 .6rem; padding: .6rem .3rem; text-decoration: none; border-bottom: 1px solid rgba(62, 242, 255, .3); }
+        .tracks a:hover { background: rgba(255, 60, 172, .12); }
+        .tracks .no { color: var(--pink); } .tracks .name { color: var(--cyan); overflow-wrap: anywhere; } .tracks .len { color: var(--sun); }
+        .tracks small { grid-column: 2 / -1; color: #b3a9d6; font-size: .8rem; }
+        .total { width: min(100%, 520px); display: flex; justify-content: space-between; color: #b3a9d6; font-size: .9rem; }
+        .total b { color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e; }
+        .play { display: inline-flex; gap: .6rem; align-items: center; padding: .5rem 1.3rem; border-radius: 999px; text-decoration: none; color: #fff; border: 2px solid var(--pink);
+            box-shadow: 0 0 14px var(--pink), inset 0 0 14px rgba(255, 60, 172, .5); transition: background .2s; }
+        .play:hover { background: var(--pink); }
 
-        .cya { font-family: 'Audiowide', sans-serif; font-size: clamp(2.4rem, 9vw, 4rem); }
-        .cya b { font-weight: normal; background: linear-gradient(#1c3a8c 5%, #8fd3ff 42%, #fff 49%, #2b1638 51%, #b44bd6 72%, #ffd6f6 95%);
-            -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 16px rgba(255, 43, 214, .6)); }
-        .hint { color: #8d7fb8; font-size: .85rem; letter-spacing: .12em; }
+        .sign { display: block; width: min(100%, 360px); padding: 1.3rem 1.8rem; border-radius: 16px; border: 3px solid #58e78e;
+            box-shadow: 0 0 10px #58e78e, 0 0 36px rgba(88, 231, 142, .45), inset 0 0 18px rgba(88, 231, 142, .35); transition: box-shadow .2s; }
+        .sign:hover { box-shadow: 0 0 16px #58e78e, 0 0 60px rgba(88, 231, 142, .7), inset 0 0 24px rgba(88, 231, 142, .5); }
+        .sign svg { display: block; width: 100%; height: auto; }
+        .sign .st0 { fill: #58e78e; } .sign .st1 { fill: #48aa7b; } .sign .st2 { fill: #f4f2ff; } .sign .st3 { fill: #284898; }
 
-        footer { max-width: 820px; margin: 0 auto; padding: 1.5rem 16px 2rem; font-size: .9rem; color: #bfb3e0; border-top: 1px solid rgba(255, 43, 214, .35); }
-        footer h3 { font-family: 'Audiowide', sans-serif; font-weight: normal; font-size: .75rem; letter-spacing: .25em; text-transform: uppercase; color: var(--pink); margin-bottom: .5rem; }
+        .cya { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 10vw, 4rem); color: #fff; text-shadow: 0 0 8px var(--cyan), 0 0 24px var(--cyan), 0 0 48px var(--blue); }
+
+        footer { max-width: 760px; margin: 0 auto; padding: 1.5rem 16px 2rem; font-size: .85rem; color: #b3a9d6; border-top: 1px solid rgba(255, 60, 172, .35); }
+        footer h3 { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--pink); margin-bottom: .4rem; }
         footer address { font-style: normal; }
         footer a { color: var(--cyan); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
-
-        .turbo .grid { animation-duration: .5s; }
-        .turbo .sun { filter: hue-rotate(160deg) drop-shadow(0 0 60px var(--cyan)); }
 
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
 </head>
 <body>
-    <div class="osd l" aria-hidden="true">PLAY ▶<br><span id="counter">SP 0:00:00</span></div>
-    <div class="osd r" aria-hidden="true">{{ strtoupper(now()->format('M. d')) }}<br>1986</div>
-    <div class="tracking" aria-hidden="true"></div>
-
-    <header class="hero">
+    <header class="drive">
         <div class="sun" aria-hidden="true"></div>
-        <svg class="mountains" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0 200 L0 120 L90 60 L170 130 L260 40 L360 140 L420 110 L500 170 L580 110 L640 140 L740 30 L830 120 L910 70 L1000 130 L1000 200 Z"/>
-            <path class="wire" d="M90 60 L130 200 M90 60 L40 200 M260 40 L220 200 M260 40 L310 200 M740 30 L700 200 M740 30 L790 200 M910 70 L880 200 M910 70 L960 200 M0 160 L1000 160"/>
+        <svg class="city" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+            <path class="far" d="M0 200V120h40V90h30v30h20V60h35v60h25V100h30V40h20V20h10v20h20v80h30V80h40v40h30V110h30V70h25v50h260V70h25v40h30V60h40v60h25V30h15V10h10v20h15v90h30V90h35v30h20V70h30v130Z"/>
+            <path class="near" d="M0 200V150h60V120h45v30h40V100h30v100h40V130h50v70h440V130h50v70h40V100h30v50h40V120h45v30h60v50Z"/>
+            <path class="edge" d="M0 150h60V120h45v30h40V100h30v100M215 200V130h50v70M705 200V130h50v70M795 200V100h30v50h40V120h45v30h90"/>
         </svg>
-        <svg class="palm l" viewBox="0 0 200 400" aria-hidden="true">
-            <path d="M104 400 C98 300 92 200 104 110 L112 110 C104 200 110 300 118 400 Z"/>
-            <path d="M108 110 C80 80 40 80 0 110 C40 90 70 96 108 116 Z M108 110 C90 70 60 40 20 40 C60 56 84 80 104 118 Z M108 110 C120 70 150 44 196 46 C154 60 130 84 112 118 Z M108 110 C140 90 176 96 200 130 C170 110 140 108 110 118 Z M108 110 C104 70 110 36 132 10 C120 44 116 80 112 116 Z M108 112 C80 120 50 150 44 190 C60 156 84 132 110 120 Z"/>
+        <div class="ground" aria-hidden="true"></div>
+        <svg class="road" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="47,0 53,0 92,100 8,100" fill="#120330"/>
+            <path class="edge" d="M47 0 8 100M53 0 92 100" fill="none"/>
+            <path class="lane" d="M50 0V100"/>
         </svg>
-        <svg class="palm r" viewBox="0 0 200 400" aria-hidden="true">            <path d="M104 400 C98 300 92 200 104 110 L112 110 C104 200 110 300 118 400 Z"/>
-            <path d="M108 110 C80 80 40 80 0 110 C40 90 70 96 108 116 Z M108 110 C90 70 60 40 20 40 C60 56 84 80 104 118 Z M108 110 C120 70 150 44 196 46 C154 60 130 84 112 118 Z M108 110 C140 90 176 96 200 130 C170 110 140 108 110 118 Z M108 110 C104 70 110 36 132 10 C120 44 116 80 112 116 Z"/>
-        </svg>
-        <div class="grid" aria-hidden="true"></div>
 
-        <div class="title">
-            <img class="avatar" src="https://avatars.githubusercontent.com/u/1874088?v=4&s=320" alt="Daniel Seuffer" width="150" height="150">
-            <p class="script">Hallo, I'm</p>
-            <h1 class="chrome">DANIEL</h1>
-            <p class="tagline">Code · Coffee · Open Source</p>
+        <div class="hero">
+            <img class="avatar" src="https://avatars.githubusercontent.com/u/1874088?v=4&s=264" alt="Daniel Seuffer" width="132" height="132">
+            <p class="hello">Hallo, I'm</p>
+            <h1 class="neon">Daniel</h1>
         </div>
     </header>
 
     <main>
         <section>
             <h2>I do open source</h2>
-            <div class="cabinet">
-                <h3>— HIGH SCORES —</h3>
-                <a class="row" href="https://github.com/InnoGE/laravel-rclone">
-                    <span class="rank">1ST</span><span class="name">InnoGE/laravel-rclone</span><span class="score">★ 18</span>
-                    <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
-                </a>
-                <a class="row" href="https://github.com/InnoGE/laravel-speculation-rules-api">
-                    <span class="rank">2ND</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="score">★ 14</span>
-                    <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
-                </a>
-                <p class="hiscore"><span>CONTRIBUTIONS / YEAR</span><b>003171</b></p>
+            <div class="tape" aria-hidden="true">
+                <span class="side">A</span>
+                <div class="label"><b>authanram — Open Source Mix</b><span>C-90 · HIGH BIAS · PHP</span></div>
+                <div class="window"><i class="reel"></i><i class="reel"></i></div>
+                <div class="screws"><i></i><i></i><i></i></div>
             </div>
-            <a class="coin" href="https://github.com/authanram">INSERT COIN · GITHUB</a>
+            <ol class="tracks">
+                <li><a href="https://github.com/InnoGE/laravel-rclone">
+                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span><span class="len">★ 18</span>
+                    <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
+                </a></li>
+                <li><a href="https://github.com/InnoGE/laravel-speculation-rules-api">
+                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="len">★ 14</span>
+                    <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
+                </a></li>
+            </ol>
+            <p class="total"><span>Contributions in the last year</span><b>3,171</b></p>
+            <a class="play" href="https://github.com/authanram">▶ Play on GitHub</a>
         </section>
 
         <section>
             <h2>And I work for</h2>
-            <a class="logo" href="https://innoge.de/ueber-uns" aria-label="InnoGE">
+            <a class="sign" href="https://innoge.de/ueber-uns" aria-label="InnoGE">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1049.1 309.1" aria-hidden="true">
 <path class="st0" d="M348.6,51.5c0,27.1-21,49.6-48.1,51.4c-1.1,0.1-2.2,0.1-3.3,0.1H149.6c-56.9,0-103,46.2-103,103.1
 	c0,48.4,33.7,90.2,80.9,100.6c-84-15-140.1-95.2-125.1-179.3C15.5,53.7,79.7,0,154.7,0H297C325.5,0,348.6,23.1,348.6,51.5
@@ -190,8 +178,7 @@
         </section>
 
         <section>
-            <p class="cya"><b>Cya</b> <span role="img" aria-label="space invader">👾</span></p>
-            <p class="hint">↑ ↑ ↓ ↓ ← → ← → B A</p>
+            <p class="cya">Cya <span role="img" aria-label="sunglasses">😎</span></p>
         </section>
     </main>
 
@@ -206,20 +193,5 @@
             <a href="tel:+4915735800060">+49 157 358 000 60</a>
         </address>
     </footer>
-
-    <script>
-        const start = Date.now(), counter = document.getElementById('counter');
-        setInterval(() => {
-            const s = Math.floor((Date.now() - start) / 1000);
-            counter.textContent = `SP ${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-        }, 1000);
-
-        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let pos = 0;
-        addEventListener('keydown', e => {
-            pos = e.key === konami[pos] ? pos + 1 : (e.key === konami[0] ? 1 : 0);
-            if (pos === konami.length) { document.body.classList.toggle('turbo'); pos = 0; }
-        });
-    </script>
 </body>
 </html>

@@ -16,7 +16,7 @@
         a { color: inherit; }
         a:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 6px; }
 
-        .drive { position: relative; height: min(78svh, 720px); min-height: 520px; overflow: hidden; isolation: isolate;
+        .drive { position: relative; height: min(66svh, 600px); min-height: 460px; overflow: hidden; isolation: isolate;
             background: linear-gradient(#07001a 0%, #1d0b4d 30%, #6a0f7a 52%, #ff3cac 62%, #ff6b3d 66%, var(--bg) 66.2%); }
         .drive::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(transparent 82%, var(--bg)); }
         .sun { position: absolute; left: 50%; bottom: 34%; width: min(64vw, 420px); aspect-ratio: 1; translate: -50% 0; border-radius: 50%; z-index: -1;
@@ -33,21 +33,26 @@
         .road .lane { stroke: var(--sun); stroke-width: .8; stroke-dasharray: 6 8; animation: lane .8s linear infinite; }
         @keyframes lane { to { stroke-dashoffset: -14; } }
 
-        .hero { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 0 16px 14vh; text-align: center; }
+        .hero { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 24px 16px 80px; text-align: center; }
         .avatar { width: 168px; height: 168px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 4px var(--blue), 0 0 30px var(--blue); margin-bottom: .6rem; }
         .hello { font-family: 'Kaushan Script', cursive; font-size: clamp(1.8rem, 6vw, 2.8rem); color: var(--sun); rotate: -5deg; text-shadow: 0 0 10px var(--orange), 0 0 26px var(--pink); }
         .neon { font-family: 'Monoton', cursive; font-weight: normal; font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1; color: #fff; letter-spacing: .02em;
             text-shadow: 0 0 4px #fff, 0 0 12px var(--pink), 0 0 26px var(--pink), 0 0 52px var(--pink), 0 0 90px var(--blue); }
 
-        main { max-width: 760px; margin: 0 auto; padding: 1.5rem 16px 2rem; display: grid; gap: 3rem; }
-        section { display: grid; gap: 1rem; justify-items: center; text-align: center; }
+        section, footer { --glow: var(--pink); padding: 2.2rem max(16px, calc((100% - 760px) / 2)); border-top: 1px solid rgba(255, 255, 255, .1);
+            background: radial-gradient(60% 120px at 50% 0, color-mix(in srgb, var(--glow) 18%, transparent), transparent), var(--band, #0b0322); }
+        section { display: grid; gap: .8rem; justify-items: center; text-align: center; }
+        section:nth-child(2) { --glow: #58e78e; --band: #0e0529; }
+        section:nth-child(3) { --glow: var(--cyan); }
+        footer { --glow: var(--blue); --band: #06001a; }
+        .eyebrow { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--orange); }
         h2 { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 
-        .tape { width: min(100%, 520px); aspect-ratio: 1.6; padding: 5%; border-radius: 14px; position: relative;
+        .tape { width: min(100%, 440px); aspect-ratio: 1.6; padding: 5%; border-radius: 14px; position: relative;
             background: linear-gradient(145deg, #2b2440, #16112a); border: 2px solid #3d3560; box-shadow: 0 16px 40px rgba(0, 0, 0, .6), 0 0 30px rgba(255, 60, 172, .25); }
         .tape .label { height: 72%; border-radius: 6px; padding: 4% 5% 0; display: grid; grid-template-rows: auto 1fr; text-align: left;
             background: linear-gradient(#f4ecd8 0 30%, var(--sun) 30% 40%, var(--orange) 40% 50%, var(--pink) 50% 60%, #f4ecd8 60%); color: #1b1030; }
-        .tape .label b { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1rem, 4vw, 1.5rem); line-height: 1.1; }
+        .tape .label b { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(.9rem, 3.6vw, 1.3rem); line-height: 1.1; white-space: nowrap; }
         .tape .label span { font-size: .7rem; letter-spacing: .15em; }
         .tape .window { position: absolute; left: 25%; right: 25%; top: 45%; height: 22%; border-radius: 40px; background: #0d0a1c; border: 2px solid #3d3560;
             display: flex; justify-content: space-between; align-items: center; padding: 0 6%; }
@@ -78,7 +83,7 @@
 
         .cya { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 10vw, 4rem); color: #fff; text-shadow: 0 0 8px var(--cyan), 0 0 24px var(--cyan), 0 0 48px var(--blue); }
 
-        footer { max-width: 760px; margin: 0 auto; padding: 1.5rem 16px 2rem; font-size: .85rem; color: #b3a9d6; border-top: 1px solid rgba(255, 60, 172, .35); }
+        footer { font-size: .85rem; color: #b3a9d6; }
         footer h3 { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--pink); margin-bottom: .4rem; }
         footer address { font-style: normal; }
         footer a { color: var(--cyan); text-decoration: none; }
@@ -111,6 +116,7 @@
 
     <main>
         <section>
+            <p class="eyebrow">Side A</p>
             <h2>I do open source</h2>
             <div class="tape" aria-hidden="true">
                 <span class="side">A</span>
@@ -133,6 +139,7 @@
         </section>
 
         <section>
+            <p class="eyebrow">Side B</p>
             <h2>And I work for</h2>
             <a class="sign" href="https://innoge.de/ueber-uns" aria-label="InnoGE">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1049.1 309.1" aria-hidden="true">
@@ -178,6 +185,7 @@
         </section>
 
         <section>
+            <p class="eyebrow">Outro</p>
             <p class="cya">Cya <span role="img" aria-label="sunglasses">😎</span></p>
         </section>
     </main>

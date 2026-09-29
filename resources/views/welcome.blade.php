@@ -42,7 +42,7 @@
         section, footer { position: relative; padding: 2.2rem max(16px, calc((100% - 760px) / 2)); }
         section::before, footer::before { content: ''; position: absolute; top: 0; left: 50%; translate: -50% 0; width: min(60%, 420px); height: 1px;
             background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent); box-shadow: 0 0 10px var(--pink); }
-        section { display: grid; gap: .8rem; justify-items: center; text-align: center; }
+        section { display: grid; gap: 1.6rem; justify-items: center; text-align: center; }
         .eyebrow { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--orange); }
         h2 { font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 

@@ -22,10 +22,10 @@
             mask: repeating-linear-gradient(#000 0 58%, transparent 58% 61%, #000 61% 66%, transparent 66% 70%, #000 70% 74%, transparent 74% 79%, #000 79% 83%, transparent 83% 89%, #000 89% 92%, transparent 92%);
             filter: drop-shadow(0 0 40px var(--pink)); opacity: .55; }
         .grid { position: fixed; left: -50%; right: -50%; bottom: 0; height: 38vh; z-index: -1;
-            background: linear-gradient(transparent 0 94%, var(--pink) 94%) 0 0 / 100% 40px, linear-gradient(90deg, transparent 0 97%, var(--pink) 97%) 0 0 / 40px 100%;
-            transform: perspective(300px) rotateX(60deg); transform-origin: bottom; opacity: .5;
-            mask: linear-gradient(transparent, #000 40%); animation: drive 1s linear infinite; }
-        @keyframes drive { to { background-position: 0 40px, 0 0; } }
+            background: linear-gradient(transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 100% 80px, linear-gradient(90deg, transparent 0 calc(100% - 4px), var(--pink) calc(100% - 3px) calc(100% - 1px), transparent 100%) 0 0 / 80px 100%;
+            transform: perspective(600px) rotateX(50deg); transform-origin: bottom; opacity: .4; will-change: background-position;
+            mask: linear-gradient(transparent 10%, #000 70%); animation: drive 4s linear infinite; }
+        @keyframes drive { to { background-position: 0 80px, 0 0; } }
         body::after { content: ''; position: fixed; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.25) 2px 4px); }
 
         main { max-width: 760px; margin: 0 auto; padding: 12vh 16px 4rem; display: grid; gap: 4.5rem; }

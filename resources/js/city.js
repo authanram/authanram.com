@@ -638,7 +638,7 @@ function supportsWebGL() {
     }
 }
 
-function start(host) {
+function start(host, still) {
     const canvas = document.createElement('canvas');
     canvas.className = 'city3d';
     canvas.setAttribute('aria-hidden', 'true');
@@ -720,10 +720,11 @@ function start(host) {
 
         composer.render();
         host.classList.add('is-3d');
+        if (still) renderer.setAnimationLoop(null);
     });
 }
 
 const host = document.querySelector('.drive');
-if (host && supportsWebGL() && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    start(host);
+if (host && supportsWebGL()) {
+    start(host, matchMedia('(prefers-reduced-motion: reduce)').matches);
 }

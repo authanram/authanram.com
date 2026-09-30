@@ -30,7 +30,7 @@
         .city3d { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: 0; transition: opacity 1.2s ease-out; }
         .is-3d .city3d { opacity: 1; }
         .is-3d::after { background: radial-gradient(40% 45% at 50% 52%, rgba(7, 0, 26, .3), transparent), linear-gradient(transparent 90%, var(--bg)); }
-        .hero { position: relative; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 24px 16px 150px; text-align: center; }
+        .hero { position: relative; display: grid; place-content: center; justify-items: center; gap: .3rem; padding: 24px 16px 80px; text-align: center; }
         .avatar { width: 168px; height: 168px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 4px var(--blue), 0 0 30px var(--blue); margin-bottom: .6rem; }
         .hello { font-family: 'Kaushan Script', cursive; font-size: clamp(1.8rem, 6vw, 2.8rem); color: var(--sun); rotate: -5deg; text-shadow: 0 0 10px var(--orange), 0 0 26px var(--pink); }
         .neon { text-wrap: balance; font-family: 'Monoton', cursive; font-weight: normal; font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1; color: #fff; letter-spacing: .02em;

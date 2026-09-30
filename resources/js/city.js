@@ -576,61 +576,6 @@ function searchlights(towers, rand) {
     });
 }
 
-function car() {
-    const body = new THREE.Shape([
-        [0, 0.35], [0, 1.1], [0.4, 1.3], [2.6, 1.4], [3.3, 2.15], [5.0, 2.15], [6.3, 1.45], [8, 0.95], [8, 0.35],
-    ].map(([x, y]) => new THREE.Vector2(x, y)));
-    const geometry = new THREE.ExtrudeGeometry(body, { depth: 3.6, bevelEnabled: false }).rotateY(Math.PI / 2).translate(-1.8, 0, 0);
-
-    const group = new THREE.Group();
-    group.add(
-        new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: '#0b0620' })),
-        new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 20), new THREE.LineBasicMaterial({ color: new THREE.Color(2.2, 0.3, 1.4) })),
-    );
-
-    const wheel = new THREE.CylinderGeometry(0.6, 0.6, 0.5, 18).rotateZ(Math.PI / 2);
-    const tyre = new THREE.MeshBasicMaterial({ color: '#050210' });
-    for (const [x, z] of [[-1.8, -1.5], [1.8, -1.5], [-1.8, -6.5], [1.8, -6.5]]) {
-        const mesh = new THREE.Mesh(wheel, tyre);
-        mesh.position.set(x, 0.6, z);
-        group.add(mesh);
-    }
-
-    const lamp = new THREE.MeshBasicMaterial({ color: new THREE.Color(4, 0.15, 0.3) });
-    for (const x of [-1.1, 1.1]) {
-        const light = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.2, 0.1), lamp);
-        light.position.set(x, 0.95, 0.05);
-        group.add(light);
-    }
-
-    const glow = (width, length, color, z) => {
-        const mesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(width, length).rotateX(-Math.PI / 2),
-            new THREE.ShaderMaterial({
-                uniforms: { uColor: { value: color } },
-                transparent: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending,
-                vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-                fragmentShader: 'uniform vec3 uColor; varying vec2 vUv; void main() { vec2 p = vUv * 2.0 - 1.0; gl_FragColor = vec4(uColor, pow(max(0.0, 1.0 - dot(p, p)), 2.0) * 0.6); }',
-            }),
-        );
-        mesh.position.set(0, 0.06, z);
-        group.add(mesh);
-    };
-    glow(6, 11, new THREE.Color(1, 0.1, 0.6), -4);
-    glow(3.4, 9, new THREE.Color(1, 0.05, 0.1), 4.5);
-
-    group.position.set(0, 0, 215);
-    group.userData.update = (t) => {
-        group.position.x = Math.sin(t * 0.35) * 1.4;
-        group.position.y = Math.sin(t * 9) * 0.03;
-        group.rotation.y = Math.cos(t * 0.35) * 0.03;
-    };
-
-    return group;
-}
-
 function supportsWebGL() {
     try {
         return !!document.createElement('canvas').getContext('webgl2');
@@ -665,8 +610,7 @@ function start(host, still) {
     const mirror = mirrorFloor();
     const traffic = trafficMesh(rand, 60);
     const spots = searchlights(towers, rand);
-    const ride = car();
-    scene.add(sky, mirror, terrainMesh(), traffic, ride, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand), ...spots);
+    scene.add(sky, mirror, terrainMesh(), traffic, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand), ...spots);
 
     const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 }));
     const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.6, 0.4, 0.8);
@@ -713,7 +657,6 @@ function start(host, still) {
         camera.rotation.set(0.04 - look.y * 0.08 + Math.sin(time.value * 0.15) * 0.01, -look.x * 0.18 + Math.sin(time.value * 0.1) * 0.02, 0);
         sky.position.copy(camera.position);
         traffic.userData.update(dt);
-        ride.userData.update(time.value);
         for (const beam of spots) {
             const { tilt, speed, phase } = beam.userData;
             beam.rotation.set(-0.35 + Math.sin(time.value * speed * 0.7 + phase) * 0.15, 0, tilt + Math.sin(time.value * speed + phase) * 0.45);

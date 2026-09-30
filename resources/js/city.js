@@ -31,6 +31,7 @@ const time = { value: 0 };
 const flow = { value: 0 };
 const lights = { value: 1 };
 const neon = { value: 1 };
+const beams = { value: 1 };
 const skyUniforms = {
     uHorizon: { value: new THREE.Color() },
     uMid: { value: new THREE.Color() },
@@ -39,6 +40,7 @@ const skyUniforms = {
     uStars: { value: 1 },
     uSun: { value: new THREE.Vector3() },
     uSunLow: { value: 0 },
+    uMoon: { value: new THREE.Vector3() },
 };
 
 const linear = (r, g, b) => new THREE.Color().setRGB(r, g, b);
@@ -78,6 +80,12 @@ function applyMood(hour) {
     const azimuth = THREE.MathUtils.lerp(-0.32, 0.32, THREE.MathUtils.clamp(day, 0, 1));
     skyUniforms.uSun.value.set(Math.sin(azimuth) * Math.cos(elevation), Math.sin(elevation), -Math.cos(azimuth) * Math.cos(elevation));
     skyUniforms.uSunLow.value = 1 - THREE.MathUtils.smoothstep(elevation, 0, 0.3);
+    beams.value = THREE.MathUtils.clamp((neon.value - 0.5) * 1.6, 0.12, 1);
+
+    const late = (((hour - 20) % 24) + 24) % 24 / 10;
+    const moonElevation = late <= 1 ? Math.sin(late * Math.PI) * 0.5 - 0.04 : -0.5;
+    const moonAzimuth = THREE.MathUtils.lerp(-0.6, 0.6, THREE.MathUtils.clamp(late, 0, 1));
+    skyUniforms.uMoon.value.set(Math.sin(moonAzimuth) * Math.cos(moonElevation), Math.sin(moonElevation), -Math.cos(moonAzimuth) * Math.cos(moonElevation));
 }
 
 const sharedUniforms = () => ({
@@ -383,6 +391,7 @@ function skyMesh() {
             fragmentShader: /* glsl */ `
                 uniform float uTime;
                 uniform vec3 uSun;
+                uniform vec3 uMoon;
                 uniform float uSunLow;
                 uniform float uStars;
                 uniform vec3 uHorizon;
@@ -413,6 +422,32 @@ function skyMesh() {
                             vec3 sun = mix(mix(vec3(0.95, 0.55, 0.08), vec3(1.0, 0.38, 0.06), uSunLow), vec3(0.95, 0.06, 0.42), (1.0 - s.y) * 0.5);
                             col = mix(sun, col, cut);
                         }
+                    }
+
+                    vec3 mr = normalize(cross(uMoon, vec3(0.0, 1.0, 0.0)));
+                    vec2 m = vec2(dot(d, mr), dot(d, cross(mr, uMoon))) / 0.075;
+                    if (dot(d, uMoon) > 0.0 && uMoon.y > -0.1) {
+                        float mlen = length(m);
+                        col += vec3(0.55, 0.45, 1.0) * exp(-mlen * 0.9) * 0.25;
+                        if (mlen < 1.0) {
+                            float crater = hash(floor(m * 4.0 + 7.0)) * 0.12;
+                            col = mix(vec3(0.95, 0.9, 1.05), vec3(0.7, 0.66, 0.9), crater + smoothstep(0.6, 1.0, mlen) * 0.2);
+                        }
+                    }
+
+                    float slot = floor(uTime / 7.0);
+                    float progress = fract(uTime / 7.0) * 7.0;
+                    if (progress < 0.9 && hash(vec2(slot, 2.0)) > 0.35 && uStars > 0.2) {
+                        vec2 sky = vec2(atan(d.x, -d.z), asin(d.y));
+                        vec2 start = vec2((hash(vec2(slot, 0.0)) - 0.5) * 1.4, 0.35 + hash(vec2(slot, 1.0)) * 0.35);
+                        vec2 dir = normalize(vec2(hash(vec2(slot, 3.0)) > 0.5 ? 1.0 : -1.0, -0.45));
+                        vec2 head = start + dir * progress / 0.9 * 0.35;
+                        vec2 tail = head - dir * 0.12;
+                        vec2 pa = sky - tail;
+                        vec2 ba = head - tail;
+                        float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+                        float streak = smoothstep(0.004, 0.0, length(pa - ba * h)) * h * (1.0 - progress / 0.9);
+                        col += vec3(1.2, 1.1, 1.4) * streak * uStars;
                     }
                     gl_FragColor = vec4(col, 1.0);
                 }
@@ -498,6 +533,103 @@ function trafficMesh(rand, count) {
     return mesh;
 }
 
+function searchlights(towers, rand) {
+    const geometry = new THREE.ConeGeometry(26, 420, 24, 1, true).rotateX(Math.PI).translate(0, 210, 0);
+    const hosts = towers.filter((t) => t.kind !== 'round' && Math.abs(t.x) > 40 && Math.abs(t.x) < 240 && t.z < -60 && t.z > -220 && t.top < 110).sort((a, b) => b.top - a.top).filter((_, i) => i % 2 === 0).slice(0, 6);
+
+    return hosts.map((t, i) => {
+        const beam = new THREE.Mesh(
+            geometry,
+            new THREE.ShaderMaterial({
+                uniforms: { uColor: { value: i % 2 ? CYAN : PINK }, uBeams: beams },
+                transparent: true,
+                depthWrite: false,
+                side: THREE.DoubleSide,
+                blending: THREE.AdditiveBlending,
+                vertexShader: /* glsl */ `
+                    varying float vAlong;
+                    varying float vFacing;
+                    void main() {
+                        vAlong = position.y / 420.0;
+                        vec4 view = modelViewMatrix * vec4(position, 1.0);
+                        vFacing = abs(dot(normalize(normalMatrix * normal), normalize(-view.xyz)));
+                        gl_Position = projectionMatrix * view;
+                    }
+                `,
+                fragmentShader: /* glsl */ `
+                    uniform vec3 uColor;
+                    uniform float uBeams;
+                    varying float vAlong;
+                    varying float vFacing;
+                    void main() {
+                        float fade = pow(1.0 - vAlong, 1.6) * smoothstep(0.0, 0.03, vAlong);
+                        gl_FragColor = vec4(uColor * 0.6, fade * (0.25 + 0.75 * pow(vFacing, 1.5)) * 0.35 * uBeams);
+                    }
+                `,
+            }),
+        );
+        beam.position.set(t.x, t.spire ?? t.top, t.z);
+        beam.userData = { tilt: Math.sign(t.x) * (0.15 + rand() * 0.25), speed: 0.12 + rand() * 0.15, phase: rand() * 10 };
+
+        return beam;
+    });
+}
+
+function car() {
+    const body = new THREE.Shape([
+        [0, 0.35], [0, 1.1], [0.4, 1.3], [2.6, 1.4], [3.3, 2.15], [5.0, 2.15], [6.3, 1.45], [8, 0.95], [8, 0.35],
+    ].map(([x, y]) => new THREE.Vector2(x, y)));
+    const geometry = new THREE.ExtrudeGeometry(body, { depth: 3.6, bevelEnabled: false }).rotateY(Math.PI / 2).translate(-1.8, 0, 0);
+
+    const group = new THREE.Group();
+    group.add(
+        new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: '#0b0620' })),
+        new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 20), new THREE.LineBasicMaterial({ color: new THREE.Color(2.2, 0.3, 1.4) })),
+    );
+
+    const wheel = new THREE.CylinderGeometry(0.6, 0.6, 0.5, 18).rotateZ(Math.PI / 2);
+    const tyre = new THREE.MeshBasicMaterial({ color: '#050210' });
+    for (const [x, z] of [[-1.8, -1.5], [1.8, -1.5], [-1.8, -6.5], [1.8, -6.5]]) {
+        const mesh = new THREE.Mesh(wheel, tyre);
+        mesh.position.set(x, 0.6, z);
+        group.add(mesh);
+    }
+
+    const lamp = new THREE.MeshBasicMaterial({ color: new THREE.Color(4, 0.15, 0.3) });
+    for (const x of [-1.1, 1.1]) {
+        const light = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.2, 0.1), lamp);
+        light.position.set(x, 0.95, 0.05);
+        group.add(light);
+    }
+
+    const glow = (width, length, color, z) => {
+        const mesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(width, length).rotateX(-Math.PI / 2),
+            new THREE.ShaderMaterial({
+                uniforms: { uColor: { value: color } },
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+                fragmentShader: 'uniform vec3 uColor; varying vec2 vUv; void main() { vec2 p = vUv * 2.0 - 1.0; gl_FragColor = vec4(uColor, pow(max(0.0, 1.0 - dot(p, p)), 2.0) * 0.6); }',
+            }),
+        );
+        mesh.position.set(0, 0.06, z);
+        group.add(mesh);
+    };
+    glow(6, 11, new THREE.Color(1, 0.1, 0.6), -4);
+    glow(3.4, 9, new THREE.Color(1, 0.05, 0.1), 4.5);
+
+    group.position.set(0, 0, 215);
+    group.userData.update = (t) => {
+        group.position.x = Math.sin(t * 0.35) * 1.4;
+        group.position.y = Math.sin(t * 9) * 0.03;
+        group.rotation.y = Math.cos(t * 0.35) * 0.03;
+    };
+
+    return group;
+}
+
 function supportsWebGL() {
     try {
         return !!document.createElement('canvas').getContext('webgl2');
@@ -531,7 +663,9 @@ function start(host) {
     let moodClock = 0;
     const mirror = mirrorFloor();
     const traffic = trafficMesh(rand, 60);
-    scene.add(sky, mirror, terrainMesh(), traffic, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand));
+    const spots = searchlights(towers, rand);
+    const ride = car();
+    scene.add(sky, mirror, terrainMesh(), traffic, ride, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand), ...spots);
 
     const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 }));
     const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.6, 0.4, 0.8);
@@ -578,6 +712,11 @@ function start(host) {
         camera.rotation.set(0.04 - look.y * 0.08 + Math.sin(time.value * 0.15) * 0.01, -look.x * 0.18 + Math.sin(time.value * 0.1) * 0.02, 0);
         sky.position.copy(camera.position);
         traffic.userData.update(dt);
+        ride.userData.update(time.value);
+        for (const beam of spots) {
+            const { tilt, speed, phase } = beam.userData;
+            beam.rotation.set(-0.35 + Math.sin(time.value * speed * 0.7 + phase) * 0.15, 0, tilt + Math.sin(time.value * speed + phase) * 0.45);
+        }
 
         composer.render();
         host.classList.add('is-3d');

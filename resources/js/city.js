@@ -562,8 +562,9 @@ function searchlights(towers, rand) {
                     varying float vAlong;
                     varying float vFacing;
                     void main() {
-                        float fade = pow(1.0 - vAlong, 1.6) * smoothstep(0.0, 0.03, vAlong);
-                        gl_FragColor = vec4(uColor * 0.6, fade * (0.25 + 0.75 * pow(vFacing, 1.5)) * 0.35 * uBeams);
+                        float along = clamp(vAlong, 0.0, 1.0);
+                        float fade = pow(1.0 - along, 1.6) * smoothstep(0.0, 0.03, along);
+                        gl_FragColor = vec4(uColor * 0.6, fade * (0.25 + 0.75 * pow(clamp(vFacing, 0.0, 1.0), 1.5)) * 0.35 * uBeams);
                     }
                 `,
             }),

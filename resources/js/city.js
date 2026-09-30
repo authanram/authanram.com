@@ -17,6 +17,8 @@ const sharedGlsl = /* glsl */ `
     uniform vec3 uFogColor;
     uniform float uFogDensity;
     uniform float uTime;
+    uniform float uLights;
+    uniform float uNeon;
     varying float vDepth;
     vec3 applyFog(vec3 col) {
         float f = 1.0 - exp(-uFogDensity * uFogDensity * vDepth * vDepth);
@@ -27,10 +29,63 @@ const sharedGlsl = /* glsl */ `
 
 const time = { value: 0 };
 const flow = { value: 0 };
+const lights = { value: 1 };
+const neon = { value: 1 };
+const skyUniforms = {
+    uHorizon: { value: new THREE.Color() },
+    uMid: { value: new THREE.Color() },
+    uHigh: { value: new THREE.Color() },
+    uZenith: { value: new THREE.Color() },
+    uStars: { value: 1 },
+    uSun: { value: new THREE.Vector3() },
+    uSunLow: { value: 0 },
+};
+
+const linear = (r, g, b) => new THREE.Color().setRGB(r, g, b);
+const night = { horizon: linear(0.12, 0.03, 0.2), mid: linear(0.05, 0.01, 0.14), high: linear(0.02, 0.005, 0.07), zenith: linear(0.005, 0, 0.02), fog: new THREE.Color('#1a0633'), lights: 1.5, neon: 1.15, stars: 1 };
+const dawn = { horizon: linear(1, 0.35, 0.12), mid: linear(0.5, 0.1, 0.3), high: linear(0.12, 0.04, 0.3), zenith: linear(0.02, 0.01, 0.1), fog: new THREE.Color('#4a1848'), lights: 1, neon: 0.9, stars: 0.3 };
+const morning = { horizon: linear(1, 0.55, 0.6), mid: linear(0.55, 0.25, 0.65), high: linear(0.2, 0.18, 0.6), zenith: linear(0.06, 0.06, 0.3), fog: new THREE.Color('#6a3c80'), lights: 0.55, neon: 0.65, stars: 0 };
+const noon = { horizon: linear(1, 0.62, 0.8), mid: linear(0.6, 0.35, 0.85), high: linear(0.25, 0.3, 0.85), zenith: linear(0.08, 0.1, 0.45), fog: new THREE.Color('#7a5098'), lights: 0.45, neon: 0.55, stars: 0 };
+const dusk = { horizon: linear(0.95, 0.32, 0.18), mid: linear(0.45, 0.06, 0.4), high: linear(0.08, 0.02, 0.2), zenith: linear(0.02, 0, 0.06), fog: new THREE.Color('#3a0a4a'), lights: 1, neon: 1, stars: 0.5 };
+const MOODS = [[0, night], [5, night], [6.5, dawn], [9, morning], [13, noon], [16.5, morning], [19, dusk], [21, night], [24, night]];
+
+function currentHour() {
+    const override = Number.parseFloat(new URLSearchParams(location.search).get('hour'));
+    if (Number.isFinite(override)) return ((override % 24) + 24) % 24;
+    const now = new Date();
+
+    return now.getHours() + now.getMinutes() / 60;
+}
+
+function applyMood(hour) {
+    const i = MOODS.findIndex(([h]) => h > hour);
+    const [h0, a] = MOODS[i - 1];
+    const [h1, b] = MOODS[i];
+    const t = THREE.MathUtils.smoothstep(hour, h0, h1);
+
+    skyUniforms.uHorizon.value.lerpColors(a.horizon, b.horizon, t);
+    skyUniforms.uMid.value.lerpColors(a.mid, b.mid, t);
+    skyUniforms.uHigh.value.lerpColors(a.high, b.high, t);
+    skyUniforms.uZenith.value.lerpColors(a.zenith, b.zenith, t);
+    skyUniforms.uStars.value = THREE.MathUtils.lerp(a.stars, b.stars, t);
+    FOG_COLOR.lerpColors(a.fog, b.fog, t);
+    lights.value = THREE.MathUtils.lerp(a.lights, b.lights, t);
+    neon.value = THREE.MathUtils.lerp(a.neon, b.neon, t);
+
+    const day = (hour - 6) / 14;
+    const up = day >= 0 && day <= 1;
+    const elevation = up ? Math.sin(day * Math.PI) * 0.4 - 0.04 : -0.5;
+    const azimuth = THREE.MathUtils.lerp(-0.32, 0.32, THREE.MathUtils.clamp(day, 0, 1));
+    skyUniforms.uSun.value.set(Math.sin(azimuth) * Math.cos(elevation), Math.sin(elevation), -Math.cos(azimuth) * Math.cos(elevation));
+    skyUniforms.uSunLow.value = 1 - THREE.MathUtils.smoothstep(elevation, 0, 0.3);
+}
+
 const sharedUniforms = () => ({
     uFogColor: { value: FOG_COLOR },
     uFogDensity: { value: FOG_DENSITY },
     uTime: time,
+    uLights: lights,
+    uNeon: neon,
 });
 
 const worldVertex = /* glsl */ `
@@ -162,9 +217,9 @@ function towerMaterial(round) {
                 vec2 cell = floor(grid);
                 float window = step(pane.x, f.x) * step(f.x, pane.y) * step(pane.z, f.y) * step(f.y, pane.w);
                 float seed = hash(cell + vColor.xy * 97.0);
-                float lit = step(1.0 - density, hash(cell + floor((uTime + seed * 90.0) / 9.0)));
+                float lit = step(1.0 - density * uLights, hash(cell + floor((uTime + seed * 90.0) / 9.0)));
                 float far = smoothstep(0.3, 0.9, max(fw.x, fw.y));
-                float coverage = (pane.y - pane.x) * (pane.w - pane.z) * density;
+                float coverage = (pane.y - pane.x) * (pane.w - pane.z) * density * uLights;
                 float wall = 1.0 - step(0.5, abs(vNormal.y));
                 col += glow * mix(window * lit, coverage, far) * wall * 0.6;
 
@@ -210,7 +265,7 @@ function neonMaterial() {
                 float seed = hash(floor(vWorld.xz * 0.5));
                 float scan = smoothstep(0.9, 1.0, fract(vWorld.y / 160.0 - uTime * (0.05 + seed * 0.05) + seed));
                 float pulse = 0.75 + 0.25 * sin(uTime * (0.6 + seed) + seed * 40.0);
-                gl_FragColor = vec4(applyFog(vColor * (pulse + scan * 1.5)), 1.0);
+                gl_FragColor = vec4(applyFog(vColor * (pulse + scan * 1.5) * uNeon), 1.0);
             }
         `,
     });
@@ -294,7 +349,7 @@ function terrainMesh() {
                     vec2 g = abs(fract(cell - 0.5) - 0.5) / fw;
                     float line = 1.0 - min(min(g.x, g.y) * 0.8, 1.0);
                     float far = smoothstep(0.12, 0.45, max(fw.x, fw.y));
-                    vec3 col = vec3(0.03, 0.005, 0.07) + vec3(1.5, 0.15, 0.95) * mix(line, 0.14, far);
+                    vec3 col = vec3(0.03, 0.005, 0.07) + vec3(1.5, 0.15, 0.95) * mix(line, 0.14, far) * uNeon;
                     gl_FragColor = vec4(applyFog(col), 1.0);
                 }
             `,
@@ -317,7 +372,7 @@ function skyMesh() {
         new THREE.ShaderMaterial({
             side: THREE.BackSide,
             depthWrite: false,
-            uniforms: { uTime: time, uSun: { value: new THREE.Vector3(0, 0.26, -1).normalize() } },
+            uniforms: { uTime: time, ...skyUniforms },
             vertexShader: /* glsl */ `
                 varying vec3 vDir;
                 void main() {
@@ -328,17 +383,23 @@ function skyMesh() {
             fragmentShader: /* glsl */ `
                 uniform float uTime;
                 uniform vec3 uSun;
+                uniform float uSunLow;
+                uniform float uStars;
+                uniform vec3 uHorizon;
+                uniform vec3 uMid;
+                uniform vec3 uHigh;
+                uniform vec3 uZenith;
                 varying vec3 vDir;
                 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
                 void main() {
                     vec3 d = normalize(vDir);
                     float y = max(d.y, 0.0);
-                    vec3 col = mix(vec3(0.95, 0.32, 0.18), vec3(0.45, 0.06, 0.4), smoothstep(0.0, 0.1, y));
-                    col = mix(col, vec3(0.08, 0.02, 0.2), smoothstep(0.08, 0.3, y));
-                    col = mix(col, vec3(0.02, 0.0, 0.06), smoothstep(0.3, 0.7, y));
+                    vec3 col = mix(uHorizon, uMid, smoothstep(0.0, 0.1, y));
+                    col = mix(col, uHigh, smoothstep(0.08, 0.3, y));
+                    col = mix(col, uZenith, smoothstep(0.3, 0.7, y));
 
                     vec2 cell = floor(vec2(atan(d.x, d.z), d.y) * 180.0);
-                    col += step(0.996, hash(cell)) * (0.5 + 0.5 * sin(uTime * 2.0 + hash(cell + 3.0) * 60.0)) * smoothstep(0.15, 0.4, y);
+                    col += step(0.996, hash(cell)) * (0.5 + 0.5 * sin(uTime * 2.0 + hash(cell + 3.0) * 60.0)) * smoothstep(0.15, 0.4, y) * uStars;
 
                     vec3 right = normalize(cross(uSun, vec3(0.0, 1.0, 0.0)));
                     vec3 up = cross(right, uSun);
@@ -349,7 +410,7 @@ function skyMesh() {
                         if (r < 1.0) {
                             float t = clamp(-s.y, 0.0, 1.0);
                             float cut = step(0.0, -s.y) * step(fract(t * 7.0), t * 0.6);
-                            vec3 sun = mix(vec3(1.0, 0.62, 0.1), vec3(0.95, 0.06, 0.42), (1.0 - s.y) * 0.5);
+                            vec3 sun = mix(mix(vec3(0.95, 0.55, 0.08), vec3(1.0, 0.38, 0.06), uSunLow), vec3(0.95, 0.06, 0.42), (1.0 - s.y) * 0.5);
                             col = mix(sun, col, cut);
                         }
                     }
@@ -457,6 +518,7 @@ function start(host) {
 
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(FOG_COLOR, FOG_DENSITY);
+    scene.fog.color = FOG_COLOR;
 
     const camera = new THREE.PerspectiveCamera(68, 1, 0.5, 2500);
     camera.rotation.order = 'YXZ';
@@ -465,6 +527,8 @@ function start(host) {
     const rand = mulberry32(1982);
     const { parts, towers } = layout(rand);
     const sky = skyMesh();
+    applyMood(currentHour());
+    let moodClock = 0;
     const mirror = mirrorFloor();
     const traffic = trafficMesh(rand, 60);
     scene.add(sky, mirror, terrainMesh(), traffic, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand));
@@ -504,6 +568,10 @@ function start(host) {
         if (!visible) return;
 
         time.value += dt;
+        if ((moodClock += dt) > 1) {
+            moodClock = 0;
+            applyMood(currentHour());
+        }
         flow.value += dt * 14;
         look.x += (pointer.x - look.x) * 0.04;
         look.y += (pointer.y - look.y) * 0.04;

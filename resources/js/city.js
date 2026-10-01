@@ -4,6 +4,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
+import { createGlider } from './city-glider.js';
 
 const FOG_COLOR = new THREE.Color('#3a0a4a');
 const FOG_DENSITY = 0.0014;
@@ -225,7 +226,13 @@ function towerMaterial(round) {
                 vec2 cell = floor(grid);
                 float window = step(pane.x, f.x) * step(f.x, pane.y) * step(pane.z, f.y) * step(f.y, pane.w);
                 float seed = hash(cell + vColor.xy * 97.0);
-                float lit = step(1.0 - density * uLights, hash(cell + floor((uTime + seed * 90.0) / 9.0)));
+                vec2 rooms = floor(cell / vec2(3.0, 2.0)) + vColor.xy * 97.0;
+                float phase = uTime / 24.0 + hash(rooms) * 8.0;
+                float before = step(0.35, hash(rooms + floor(phase)));
+                float after = step(0.35, hash(rooms + floor(phase) + 1.0));
+                float occupied = mix(before, after, smoothstep(0.0, 0.2, fract(phase)));
+                float brightness = mix(1.0, mix(0.12, 1.0, occupied), step(0.65, hash(rooms + 17.0)));
+                float lit = step(1.0 - density * uLights, seed) * brightness;
                 float far = smoothstep(0.3, 0.9, max(fw.x, fw.y));
                 float coverage = (pane.y - pane.x) * (pane.w - pane.z) * density * uLights;
                 float wall = 1.0 - step(0.5, abs(vNormal.y));
@@ -273,7 +280,10 @@ function neonMaterial() {
                 float seed = hash(floor(vWorld.xz * 0.5));
                 float scan = smoothstep(0.9, 1.0, fract(vWorld.y / 160.0 - uTime * (0.05 + seed * 0.05) + seed));
                 float pulse = 0.75 + 0.25 * sin(uTime * (0.6 + seed) + seed * 40.0);
-                gl_FragColor = vec4(applyFog(vColor * (pulse + scan * 1.5) * uNeon), 1.0);
+                float beacon = step(2.0, vColor.r) * (1.0 - step(0.2, vColor.g));
+                float blink = pow(max(0.0, sin(uTime * 1.8 + hash(floor(vWorld.xz * 0.01)) * 6.28)), 8.0);
+                float intensity = mix(pulse + scan * 1.5, 0.15 + blink * 2.0, beacon);
+                gl_FragColor = vec4(applyFog(vColor * intensity * uNeon), 1.0);
             }
         `,
     });
@@ -490,8 +500,9 @@ async function drawSign(ctx, text, color) {
 function signs(towers) {
     const group = new THREE.Group();
     const hosts = towers.filter((t) => t.kind === 'box' && t.z > -40 && Math.abs(t.x) < 140 && t.h > 50);
-    [['1982', '#ff3cac'], ['LARAVEL', '#3ef2ff'], ['OPEN SOURCE', '#ff3cac'], ['CATS', '#3ef2ff']].forEach(([text, color], i) => {
-        const tower = hosts[Math.floor(((i + 0.5) / 4) * hosts.length)];
+    const labels = [['1982', '#ff3cac'], ['LARAVEL', '#3ef2ff'], ['OPEN SOURCE', '#ff3cac'], ['CATS', '#3ef2ff'], ['PHP', '#ff3cac'], ['InnoGE', '#3ef2ff']];
+    labels.forEach(([text, color], i) => {
+        const tower = hosts[Math.floor(((i + 0.5) / labels.length) * hosts.length)];
         if (!tower) return;
         const sign = new THREE.Mesh(
             new THREE.PlaneGeometry(tower.w * 0.9, tower.w * 0.23),
@@ -609,8 +620,9 @@ function start(host, still) {
     let moodClock = 0;
     const mirror = mirrorFloor();
     const traffic = trafficMesh(rand, 60);
+    const glider = createGlider();
     const spots = searchlights(towers, rand);
-    scene.add(sky, mirror, terrainMesh(), traffic, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand), ...spots);
+    scene.add(sky, mirror, terrainMesh(), traffic, glider, signs(towers), ...towerMeshes(parts), ...neonMeshes(towers, rand), ...spots);
 
     const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 }));
     const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.6, 0.4, 0.8);
@@ -657,6 +669,7 @@ function start(host, still) {
         camera.rotation.set(0.04 - look.y * 0.08 + Math.sin(time.value * 0.15) * 0.01, -look.x * 0.18 + Math.sin(time.value * 0.1) * 0.02, 0);
         sky.position.copy(camera.position);
         traffic.userData.update(dt);
+        glider.userData.update(time.value);
         for (const beam of spots) {
             const { tilt, speed, phase } = beam.userData;
             beam.rotation.set(-0.35 + Math.sin(time.value * speed * 0.7 + phase) * 0.15, 0, tilt + Math.sin(time.value * speed + phase) * 0.45);

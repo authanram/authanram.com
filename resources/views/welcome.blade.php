@@ -38,7 +38,15 @@
 
         .sent { margin-top: .6rem; padding: .2rem .9rem; border-radius: 999px; background: var(--bg); color: var(--cyan); letter-spacing: .12em; text-shadow: 0 0 8px var(--cyan); }
         .sent span { color: var(--sun); text-shadow: 0 0 8px var(--orange); }
-        section, footer { position: relative; padding: 2.2rem max(16px, calc((100% - 760px) / 2)); }
+        main { position: relative; isolation: isolate; overflow: clip; }
+        main::before { content: ''; position: absolute; top: 40px; left: -30%; width: 110%; height: 850px; z-index: -1; pointer-events: none;
+            background: radial-gradient(ellipse at 30% 45%, rgba(255, 60, 172, .15), transparent 54%), radial-gradient(ellipse at 55% 50%, transparent 30%, rgba(106, 48, 180, .16) 48%, transparent 67%);
+            mask-image: radial-gradient(ellipse, #000 30%, transparent 70%); rotate: -18deg; animation: mist-drift 28s ease-in-out infinite alternate; }
+        @keyframes mist-drift { from { transform: translate(-12px, 0); } to { transform: translate(24px, 18px); } }
+        .side-a { background: radial-gradient(ellipse at 50% 35%, rgba(255, 60, 172, .1), transparent 58%); }
+        .side-b { background: radial-gradient(ellipse 50% 38% at 50% 62%, rgba(88, 231, 142, .18), transparent); }
+        .bonus { background: radial-gradient(ellipse at 50% 62%, rgba(255, 107, 61, .1), transparent 48%); }
+        section, footer { position: relative; padding: 3rem max(16px, calc((100% - 760px) / 2)); }
         section::before, footer::before { content: ''; position: absolute; top: 0; left: 50%; translate: -50% 0; width: min(60%, 420px); height: 1px;
             background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent); box-shadow: 0 0 10px var(--pink); }
         section { display: grid; gap: 1.6rem; justify-items: center; text-align: center; }
@@ -84,6 +92,18 @@
         .sign .st0 { fill: #58e78e; } .sign .st1 { fill: #48aa7b; } .sign .st2 { fill: #f4f2ff; } .sign .st3 { fill: #284898; }
 
         .cat { font: 1.4rem/1.2 'Share Tech Mono', monospace; text-align: left; color: var(--sun); text-shadow: 0 0 10px var(--orange); }
+        .cat-eye { display: inline-block; }
+        @keyframes cat-blink { 0%, 42%, 58%, 100% { scale: 1 1; } 48%, 52% { scale: 1 .12; } }
+        @supports (animation-timeline: view()) {
+            .cat-eye { animation: cat-blink linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+        }
+        .outro { min-height: 430px; align-content: start; padding-top: 4rem; padding-bottom: 200px; isolation: isolate;
+            background: radial-gradient(ellipse 55% 14% at 50% 85%, rgba(62, 242, 255, .13), transparent), radial-gradient(ellipse at 50% 85%, rgba(43, 134, 255, .22), transparent 65%); }
+        .outro::after { content: ''; position: absolute; inset: auto 0 4px; height: 58px; z-index: -1; pointer-events: none;
+            background: radial-gradient(ellipse 2% 95% at 9% 0, rgba(62, 242, 255, .26), transparent), radial-gradient(ellipse 3% 100% at 25.5% 0, rgba(43, 134, 255, .32), transparent), radial-gradient(ellipse 2% 70% at 62.5% 0, rgba(62, 242, 255, .18), transparent), radial-gradient(ellipse 3% 100% at 71.5% 0, rgba(62, 242, 255, .28), transparent), radial-gradient(ellipse 2% 90% at 89% 0, rgba(43, 134, 255, .3), transparent);
+            filter: blur(6px); mask-image: linear-gradient(#000, transparent); }
+        .outro-skyline { position: absolute; bottom: 62px; left: 0; width: 100%; height: 130px; z-index: -1; pointer-events: none;
+            fill: rgba(7, 0, 26, .8); stroke: rgba(62, 242, 255, .3); stroke-width: 1; mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent); }
         .cya { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 10vw, 4rem); color: #fff; text-shadow: 0 0 8px var(--cyan), 0 0 24px var(--cyan), 0 0 48px var(--blue); }
 
         footer { font-size: .85rem; color: #b3a9d6; }
@@ -92,6 +112,12 @@
         footer a { display: inline-block; padding-block: .2rem; color: var(--cyan); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
 
+        @media (max-width: 600px) {
+            main::before { left: -65%; width: 160%; height: 700px; opacity: .7; }
+            .outro::after { left: -40%; right: -40%; }
+            .outro { min-height: 360px; padding-bottom: 160px; }
+            .outro-skyline { width: 180%; left: -40%; height: 100px; }
+        }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
 </head>
@@ -107,7 +133,7 @@
     </header>
 
     <main>
-        <section>
+        <section class="side-a">
             <p class="eyebrow">Side A</p>
             <h2>I do open source</h2>
             <p class="aside">(sometimes)</p>
@@ -131,7 +157,7 @@
             <a class="play" href="https://github.com/authanram"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Play on GitHub</a>
         </section>
 
-        <section>
+        <section class="side-b">
             <p class="eyebrow">Side B</p>
             <h2>And I work for</h2>
             <a class="sign" href="https://innoge.de/ueber-uns" aria-label="InnoGE">
@@ -177,17 +203,21 @@
             </a>
         </section>
 
-        <section>
+        <section class="bonus">
             <p class="eyebrow">Bonus Track</p>
             <h2>I like cats</h2>
             <pre class="cat" aria-hidden="true"> /\_/\
-( o.o )
+( <span class="cat-eye">o</span>.<span class="cat-eye">o</span> )
  > ^ <</pre>
         </section>
 
-        <section>
+        <section class="outro">
             <p class="eyebrow">Outro</p>
             <p class="cya">Cya <span role="img" aria-label="sunglasses">😎</span></p>
+            <svg class="outro-skyline" viewBox="0 0 1400 140" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 140V100H50V65H75V100H110V45H125V25H135V45H150V115H200V85H235V50H265V105H315V70H345V30H355V10H365V30H380V110H425V90H465V120H505V100H540V130H590V115H620V130H690V120H735V130H790V100H820V110H850V65H870V35H880V65H905V110H950V80H980V25H995V5H1005V25H1020V95H1060V55H1100V100H1140V75H1180V110H1220V45H1235V20H1245V45H1260V90H1310V65H1345V100H1400V140Z"/>
+                <path d="M0 139H1400 M119 58V80 M354 43V68 M989 39V67 M1234 58V78"/>
+            </svg>
         </section>
     </main>
 

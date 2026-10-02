@@ -54,6 +54,7 @@
         section h2 { text-wrap: balance; font-family: 'Kaushan Script', cursive; font-weight: normal; font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--cyan); rotate: -3deg; text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--blue); }
 
         .aside { margin-top: -1.2rem; font-size: .8rem; letter-spacing: .12em; color: #8d82b3; }
+        .sign + .aside { margin-top: -.6rem; }
         .tape { width: min(100%, 440px); aspect-ratio: 1.6; padding: 5%; border-radius: 14px; position: relative;
             background: linear-gradient(145deg, #2b2440, #16112a); border: 2px solid #3d3560; box-shadow: 0 16px 40px rgba(0, 0, 0, .6), 0 0 30px rgba(255, 60, 172, .25); }
         .tape .label { height: 72%; border-radius: 6px; padding: 4% 5% 0; display: grid; grid-template-rows: auto 1fr; text-align: left;
@@ -77,15 +78,17 @@
         .tracks a:hover { background: rgba(255, 60, 172, .12); }
         .tracks a:focus-visible { outline-offset: 2px; }
         .tracks .no { color: var(--pink); } .tracks .name { color: var(--cyan); overflow-wrap: anywhere; } .tracks .len { color: var(--sun); font-variant-numeric: tabular-nums; }
+        .tracks .dl { grid-column: 2 / -1; color: #8d82b3; font-size: .75rem; font-variant-numeric: tabular-nums; }
+        .tracks .dl b { font-weight: normal; font-size: 1.05rem; color: #58e78e; text-shadow: 0 0 8px #58e78e; }
         .tracks small { text-wrap: pretty; grid-column: 2 / -1; color: #b3a9d6; font-size: .8rem; }
-        .total { width: min(100%, 520px); display: flex; justify-content: space-between; color: #b3a9d6; font-size: .9rem; }
-        .total b { font-variant-numeric: tabular-nums; color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e; }
+        .total { display: grid; justify-items: center; gap: 1.1rem; color: #b3a9d6; font-size: .9rem; letter-spacing: .08em; }
+        .total b { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e, 0 0 24px rgba(88, 231, 142, .6); }
         .play { display: inline-flex; gap: .6rem; align-items: center; padding: .5rem 1.3rem; border-radius: 999px; text-decoration: none; color: #fff; border: 2px solid var(--pink);
             box-shadow: 0 0 14px var(--pink), inset 0 0 14px rgba(255, 60, 172, .5); transition: background .2s, color .2s, translate .1s; }
         .play:hover { background: var(--pink); color: var(--bg); }
         .play:active { translate: 0 1px; }
 
-        .sign { display: block; width: min(100%, 360px); padding: 1.3rem 1.8rem; border-radius: 16px; border: 3px solid #58e78e;
+        .sign { display: block; width: min(100%, 270px); padding: 1rem 1.35rem; border-radius: 12px; border: 3px solid #58e78e;
             box-shadow: 0 0 10px #58e78e, 0 0 36px rgba(88, 231, 142, .45), inset 0 0 18px rgba(88, 231, 142, .35); transition: box-shadow .2s; }
         .sign:hover { box-shadow: 0 0 16px #58e78e, 0 0 60px rgba(88, 231, 142, .7), inset 0 0 24px rgba(88, 231, 142, .5); }
         .sign svg { display: block; width: 100%; height: auto; }
@@ -145,15 +148,19 @@
             </div>
             <ol class="tracks">
                 <li><a href="https://github.com/InnoGE/laravel-rclone">
-                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span><span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> 18<span class="sr"> stars</span></span>
+                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span>@if ($package = $packages['innoge/laravel-rclone'])<span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> {{ Number::format($package['stars']) }}<span class="sr"> stars</span></span>@endif
                     <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
+                    @if ($package)<span class="dl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10l3.5-3.5 1.4 1.4L12 16.8l-5.9-5.9 1.4-1.4L11 13zM5 19h14v2H5z"/></svg> <b>{{ Number::format($package['downloads']) }}</b> downloads</span>@endif
                 </a></li>
                 <li><a href="https://github.com/InnoGE/laravel-speculation-rules-api">
-                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> 14<span class="sr"> stars</span></span>
+                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span>@if ($package = $packages['innoge/laravel-speculation-rules-api'])<span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> {{ Number::format($package['stars']) }}<span class="sr"> stars</span></span>@endif
                     <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
+                    @if ($package)<span class="dl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10l3.5-3.5 1.4 1.4L12 16.8l-5.9-5.9 1.4-1.4L11 13zM5 19h14v2H5z"/></svg> <b>{{ Number::format($package['downloads']) }}</b> downloads</span>@endif
                 </a></li>
             </ol>
-            <p class="total"><span>Contributions in the last year</span><b>3,171</b></p>
+            @if ($contributions)
+                <p class="total"><span>Contributions in the last year</span><b>{{ Number::format($contributions) }}</b></p>
+            @endif
             <a class="play" href="https://github.com/authanram"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Play on GitHub</a>
         </section>
 
@@ -201,6 +208,7 @@
 <path class="st2" d="M953.3,227.1V89.6h95.5v24h-65.5v32.8h60.6v24h-60.6v32.8h65.8v24L953.3,227.1z"/>
 </svg>
             </a>
+            <p class="aside">(Best employer I can imagine)</p>
         </section>
 
         <section class="bonus">

@@ -22,7 +22,7 @@ test('it shows live package downloads, stars and contributions', function () {
 
     $this->get('/')
         ->assertOk()
-        ->assertSeeInOrder(['InnoGE/laravel-rclone', '18', '12,536 downloads', 'InnoGE/laravel-speculation-rules-api', '14', '184 downloads'])
+        ->assertSeeInOrder(['InnoGE/laravel-rclone', '18', '12,536', 'InnoGE/laravel-speculation-rules-api', '14', '184'])
         ->assertSee('3,233');
 });
 

@@ -181,6 +181,7 @@
 <path class="st2" d="M953.3,227.1V89.6h95.5v24h-65.5v32.8h60.6v24h-60.6v32.8h65.8v24L953.3,227.1z"/>
 </svg>
             </a>
+            <p class="aside">(Best employer I can imagine)</p>
         </section>
 
         <section>

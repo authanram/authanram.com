@@ -79,7 +79,7 @@
         .play:hover { background: var(--pink); color: var(--bg); }
         .play:active { translate: 0 1px; }
 
-        .sign { display: block; width: min(100%, 360px); padding: 1.3rem 1.8rem; border-radius: 16px; border: 3px solid #58e78e;
+        .sign { display: block; width: min(100%, 270px); padding: 1rem 1.35rem; border-radius: 12px; border: 3px solid #58e78e;
             box-shadow: 0 0 10px #58e78e, 0 0 36px rgba(88, 231, 142, .45), inset 0 0 18px rgba(88, 231, 142, .35); transition: box-shadow .2s; }
         .sign:hover { box-shadow: 0 0 16px #58e78e, 0 0 60px rgba(88, 231, 142, .7), inset 0 0 24px rgba(88, 231, 142, .5); }
         .sign svg { display: block; width: 100%; height: auto; }

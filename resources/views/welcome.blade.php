@@ -69,6 +69,7 @@
         .tracks a:hover { background: rgba(255, 60, 172, .12); }
         .tracks a:focus-visible { outline-offset: 2px; }
         .tracks .no { color: var(--pink); } .tracks .name { color: var(--cyan); overflow-wrap: anywhere; } .tracks .len { color: var(--sun); font-variant-numeric: tabular-nums; }
+        .tracks .dl { grid-column: 2 / -1; color: #8d82b3; font-size: .75rem; font-variant-numeric: tabular-nums; }
         .tracks small { text-wrap: pretty; grid-column: 2 / -1; color: #b3a9d6; font-size: .8rem; }
         .total { width: min(100%, 520px); display: flex; justify-content: space-between; color: #b3a9d6; font-size: .9rem; }
         .total b { font-variant-numeric: tabular-nums; color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e; }
@@ -119,15 +120,19 @@
             </div>
             <ol class="tracks">
                 <li><a href="https://github.com/InnoGE/laravel-rclone">
-                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span><span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> 18<span class="sr"> stars</span></span>
+                    <span class="no">01</span><span class="name">InnoGE/laravel-rclone</span>@if ($package = $packages['innoge/laravel-rclone'])<span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> {{ Number::format($package['stars']) }}<span class="sr"> stars</span></span>@endif
                     <small>A sleek Laravel package that wraps rclone with an elegant, fluent API syntax.</small>
+                    @if ($package)<span class="dl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10l3.5-3.5 1.4 1.4L12 16.8l-5.9-5.9 1.4-1.4L11 13zM5 19h14v2H5z"/></svg> {{ Number::format($package['downloads']) }} downloads</span>@endif
                 </a></li>
                 <li><a href="https://github.com/InnoGE/laravel-speculation-rules-api">
-                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span><span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> 14<span class="sr"> stars</span></span>
+                    <span class="no">02</span><span class="name">InnoGE/laravel-speculation-rules-api</span>@if ($package = $packages['innoge/laravel-speculation-rules-api'])<span class="len"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg> {{ Number::format($package['stars']) }}<span class="sr"> stars</span></span>@endif
                     <small>A streamlined solution to utilize the Speculation Rules API, allowing you to speed up your website performance significantly.</small>
+                    @if ($package)<span class="dl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10l3.5-3.5 1.4 1.4L12 16.8l-5.9-5.9 1.4-1.4L11 13zM5 19h14v2H5z"/></svg> {{ Number::format($package['downloads']) }} downloads</span>@endif
                 </a></li>
             </ol>
-            <p class="total"><span>Contributions in the last year</span><b>3,171</b></p>
+            @if ($contributions)
+                <p class="total"><span>Contributions in the last year</span><b>{{ Number::format($contributions) }}</b></p>
+            @endif
             <a class="play" href="https://github.com/authanram"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>Play on GitHub</a>
         </section>
 

@@ -72,8 +72,8 @@
         .tracks .dl { grid-column: 2 / -1; color: #8d82b3; font-size: .75rem; font-variant-numeric: tabular-nums; }
         .tracks .dl b { font-weight: normal; font-size: 1.05rem; color: #58e78e; text-shadow: 0 0 8px #58e78e; }
         .tracks small { text-wrap: pretty; grid-column: 2 / -1; color: #b3a9d6; font-size: .8rem; }
-        .total { width: min(100%, 520px); display: flex; justify-content: space-between; color: #b3a9d6; font-size: .9rem; }
-        .total b { font-variant-numeric: tabular-nums; color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e; }
+        .total { display: grid; justify-items: center; gap: .6rem; color: #b3a9d6; font-size: .9rem; letter-spacing: .08em; }
+        .total b { font-family: 'Monoton', cursive; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #58e78e; font-weight: normal; text-shadow: 0 0 8px #58e78e, 0 0 24px rgba(88, 231, 142, .6); }
         .play { display: inline-flex; gap: .6rem; align-items: center; padding: .5rem 1.3rem; border-radius: 999px; text-decoration: none; color: #fff; border: 2px solid var(--pink);
             box-shadow: 0 0 14px var(--pink), inset 0 0 14px rgba(255, 60, 172, .5); transition: background .2s, color .2s, translate .1s; }
         .play:hover { background: var(--pink); color: var(--bg); }

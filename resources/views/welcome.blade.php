@@ -95,7 +95,7 @@
         .logo { --glow: 255, 201, 60; display: block; width: min(100%, 260px); filter: drop-shadow(0 0 18px rgba(var(--glow), .35)); transition: filter .2s; }
         .logo:hover { filter: drop-shadow(0 0 28px rgba(var(--glow), .6)); }
         .logo img { display: block; width: 100%; height: auto; }
-        .nos { --glow: 249, 115, 22; }
+        .nos { --glow: 249, 115, 22; width: min(100%, 208px); }
         .sign .st0 { fill: #58e78e; } .sign .st1 { fill: #48aa7b; } .sign .st2 { fill: #f4f2ff; } .sign .st3 { fill: #284898; }
 
         .cat { font: 1.4rem/1.2 'Share Tech Mono', monospace; text-align: left; color: var(--sun); text-shadow: 0 0 10px var(--orange); }
